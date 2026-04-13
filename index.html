@@ -1,0 +1,1797 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Oraly">
+<meta name="theme-color" content="#00897B">
+<link rel="manifest" href="./manifest.json">
+<title>Oraly — Dentist Empanelment Form</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
+
+  :root {
+    --teal: #00897B;
+    --teal-dark: #00695C;
+    --teal-light: #E0F2F1;
+    --teal-mid: #4DB6AC;
+    --accent: #FF6F00;
+    --accent-light: #FFF3E0;
+    --bg: #F5F7F6;
+    --card: #FFFFFF;
+    --text: #1A2E2A;
+    --text-mid: #455A50;
+    --text-light: #78909C;
+    --border: #CFE0DC;
+    --danger: #E53935;
+    --success: #2E7D32;
+    --radius: 14px;
+    --shadow: 0 2px 12px rgba(0,137,123,0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', 'Noto Sans Devanagari', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal) 100%);
+    padding: 20px 18px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,105,92,0.25);
+  }
+  .header-logo {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.5px;
+  }
+  .header-logo span { color: var(--teal-mid); }
+  .header-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,0.75);
+    margin-top: 3px;
+  }
+
+  /* PROGRESS BAR */
+  .progress-bar-wrap {
+    background: rgba(255,255,255,0.2);
+    border-radius: 99px;
+    height: 5px;
+    margin-top: 12px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    background: #fff;
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.4s cubic-bezier(.4,0,.2,1);
+  }
+  .progress-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.8);
+    margin-top: 5px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* SECTION TABS */
+  .section-tabs {
+    display: flex;
+    overflow-x: auto;
+    gap: 8px;
+    padding: 14px 18px 10px;
+    scrollbar-width: none;
+  }
+  .section-tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    flex-shrink: 0;
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 2px solid var(--border);
+    background: var(--card);
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab.active {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: #fff;
+  }
+  .tab.completed {
+    background: var(--teal-light);
+    border-color: var(--teal-mid);
+    color: var(--teal-dark);
+  }
+
+  /* CARDS */
+  .section-card {
+    margin: 12px 14px;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: none;
+  }
+  .section-card.active { display: block; }
+
+  .section-header {
+    background: linear-gradient(90deg, var(--teal-light), #fff);
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    background: var(--teal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .section-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--teal-dark);
+    line-height: 1.2;
+  }
+  .section-subtitle {
+    font-size: 11px;
+    color: var(--text-light);
+    margin-top: 2px;
+  }
+
+  .section-body { padding: 16px 18px; }
+
+  /* FIELD */
+  .field { margin-bottom: 18px; }
+  .field-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-mid);
+    margin-bottom: 7px;
+    display: block;
+    line-height: 1.4;
+  }
+  .field-label .req { color: var(--danger); margin-left: 3px; }
+
+  input[type="text"],
+  input[type="tel"],
+  input[type="email"],
+  input[type="number"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--text);
+    background: #FAFCFC;
+    transition: border 0.2s;
+    -webkit-appearance: none;
+  }
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--teal);
+    background: #fff;
+  }
+  textarea { resize: vertical; min-height: 80px; }
+
+  /* CHECKBOX GROUP */
+  .check-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 12px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    background: #FAFCFC;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .check-item.selected {
+    border-color: var(--teal);
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    font-weight: 600;
+  }
+  .check-item input { display: none; }
+
+  /* RADIO GROUP (single select chips) */
+  .radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+  }
+  .radio-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 14px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    background: #FAFCFC;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .radio-item.selected {
+    border-color: var(--teal);
+    background: var(--teal);
+    color: #fff;
+    font-weight: 600;
+  }
+  .radio-item input { display: none; }
+
+  /* RATING */
+  .rating-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .rating-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    border: 2px solid var(--border);
+    background: #FAFCFC;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--text-mid);
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .rating-btn.selected {
+    background: var(--teal);
+    border-color: var(--teal);
+    color: #fff;
+  }
+  .rating-hint {
+    font-size: 11px;
+    color: var(--text-light);
+    margin-top: 5px;
+  }
+
+  /* SPECIAL: GPS + PHOTO */
+  .special-box {
+    background: linear-gradient(135deg, #E3F7F5, #F0FBF9);
+    border: 2px dashed var(--teal-mid);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-bottom: 18px;
+    text-align: center;
+  }
+  .special-box h3 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--teal-dark);
+    margin-bottom: 6px;
+  }
+  .special-box p {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-bottom: 12px;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 11px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-teal { background: var(--teal); color: #fff; }
+  .btn-teal:hover { background: var(--teal-dark); }
+  .btn-outline { background: transparent; color: var(--teal); border: 2px solid var(--teal); }
+  .btn-accent { background: var(--accent); color: #fff; }
+  .btn-full { width: 100%; justify-content: center; }
+  .btn-sm { padding: 8px 14px; font-size: 12px; }
+
+  .gps-status {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    display: none;
+  }
+  .gps-status.success {
+    background: #E8F5E9;
+    color: var(--success);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .gps-status.error {
+    background: #FFEBEE;
+    color: var(--danger);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* PHOTO UPLOAD */
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .photo-thumb {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    border: 2px solid var(--border);
+    background: var(--bg);
+  }
+  .photo-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .photo-remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 22px;
+    height: 22px;
+    background: rgba(0,0,0,0.6);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+  }
+  .photo-add {
+    aspect-ratio: 1;
+    border-radius: 10px;
+    border: 2px dashed var(--teal-mid);
+    background: var(--teal-light);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    gap: 4px;
+    color: var(--teal);
+    font-size: 11px;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+  .photo-add:hover { background: #B2DFDB; }
+  .photo-add .plus { font-size: 24px; line-height: 1; }
+  #photoInput { display: none; }
+
+  /* MONTH GRID */
+  .month-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .month-cell {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 8px;
+    background: #FAFCFC;
+  }
+  .month-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--teal-dark);
+    margin-bottom: 6px;
+  }
+  .month-cell input {
+    padding: 7px 8px;
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+  .month-cell .radio-group { gap: 4px; }
+  .month-cell .radio-item {
+    padding: 4px 7px;
+    font-size: 10px;
+    border-radius: 6px;
+  }
+
+  /* HOUR GRID */
+  .hour-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .hour-cell {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 10px;
+    background: #FAFCFC;
+  }
+  .hour-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-mid);
+    margin-bottom: 6px;
+  }
+
+  /* FEE TABLE */
+  .fee-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .fee-row:last-child { border-bottom: none; }
+  .fee-name {
+    flex: 1;
+    font-size: 12px;
+    color: var(--text-mid);
+    font-weight: 500;
+  }
+  .fee-inputs { display: flex; gap: 6px; align-items: center; }
+  .fee-inputs input {
+    width: 72px;
+    padding: 8px 8px;
+    font-size: 12px;
+    text-align: center;
+  }
+  .fee-sep { font-size: 11px; color: var(--text-light); }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 20px 0;
+  }
+  .sub-section-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--teal-dark);
+    background: var(--teal-light);
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* NAV BUTTONS */
+  .nav-btns {
+    display: flex;
+    gap: 10px;
+    margin: 14px;
+  }
+  .nav-btns .btn { flex: 1; }
+
+  /* SUBMIT OVERLAY */
+  .submit-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .submit-overlay.show { display: flex; }
+  .submit-modal {
+    background: #fff;
+    border-radius: 20px;
+    padding: 28px;
+    width: 100%;
+    max-width: 360px;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .submit-modal .big-icon { font-size: 48px; margin-bottom: 12px; }
+  .submit-modal h2 { font-size: 20px; color: var(--teal-dark); margin-bottom: 8px; }
+  .submit-modal p { font-size: 13px; color: var(--text-light); margin-bottom: 20px; }
+
+  /* EXECUTIVE INFO BAR */
+  .exec-bar {
+    background: var(--accent-light);
+    border-bottom: 2px solid var(--accent);
+    padding: 12px 18px;
+  }
+  .exec-bar input {
+    border: 2px solid #FFCC80;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 13px;
+    padding: 9px 12px;
+    width: 100%;
+    margin-top: 6px;
+  }
+  .exec-bar label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* FLOATING BOTTOM BAR */
+  .bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0; right: 0;
+    background: #fff;
+    border-top: 2px solid var(--border);
+    padding: 12px 18px;
+    display: flex;
+    gap: 10px;
+    z-index: 50;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+  }
+  .step-counter {
+    flex: 0 0 auto;
+    padding: 0 14px;
+    display: flex;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-light);
+  }
+
+  .info-banner {
+    background: var(--teal-light);
+    border-left: 4px solid var(--teal);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--teal-dark);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 10px;
+    border-radius: 99px;
+    font-size: 11px;
+    font-weight: 700;
+    background: var(--teal-light);
+    color: var(--teal-dark);
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+    <div>
+      <div class="header-logo">oraly<span>.in</span></div>
+      <div class="header-sub">Dentist Empanelment — Field Form</div>
+    </div>
+    <div class="badge">🦷 Field</div>
+  </div>
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progressFill" style="width:11%"></div>
+  </div>
+  <div class="progress-label">
+    <span id="progressText">Section 1 of 9</span>
+    <span id="progressPct">11%</span>
+  </div>
+</div>
+
+<!-- EXECUTIVE INFO -->
+<div class="exec-bar">
+  <label>👤 Executive Info</label>
+  <input type="text" id="execName" placeholder="आपका नाम और Employee ID (जैसे: Rahul — ORL-041)" />
+</div>
+
+<!-- SECTION TABS -->
+<div class="section-tabs" id="sectionTabs">
+  <div class="tab active" onclick="goTo(0)">A: Basic</div>
+  <div class="tab" onclick="goTo(1)">B: Infra</div>
+  <div class="tab" onclick="goTo(2)">C: Fees</div>
+  <div class="tab" onclick="goTo(3)">D: Pricing</div>
+  <div class="tab" onclick="goTo(4)">E: Footfall</div>
+  <div class="tab" onclick="goTo(5)">F: Patient</div>
+  <div class="tab" onclick="goTo(6)">G: Market</div>
+  <div class="tab" onclick="goTo(7)">H: Digital</div>
+  <div class="tab" onclick="goTo(8)">I: Final</div>
+</div>
+
+<!-- ======= SECTION A ======= -->
+<div class="section-card active" id="sec0">
+  <div class="section-header">
+    <div class="section-icon">📋</div>
+    <div>
+      <div class="section-title">Section A — मूलभूत जानकारी</div>
+      <div class="section-subtitle">Basic Information + GPS + Photos</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <!-- GPS BOX -->
+    <div class="special-box">
+      <h3>📍 Clinic Location Tag करें</h3>
+      <p>Executive को clinic के अंदर या बाहर खड़े होकर यह tap करना है</p>
+      <button class="btn btn-teal btn-full" onclick="captureGPS()">
+        <span>📍</span> अभी Location Capture करें
+      </button>
+      <div class="gps-status" id="gpsStatus"></div>
+      <div id="gpsDisplay" style="margin-top:8px;font-size:11px;color:var(--text-light);display:none"></div>
+    </div>
+
+    <!-- PHOTO UPLOAD -->
+    <div class="special-box" style="text-align:left;">
+      <h3 style="text-align:center;">📷 Clinic Photos</h3>
+      <p style="text-align:center;">बाहर का board + reception + chair area की photos लें</p>
+      <div style="display:flex;gap:10px;margin-bottom:10px;">
+        <button class="btn btn-teal" style="flex:1;justify-content:center;" onclick="document.getElementById('cameraInput').click()">📸 Camera</button>
+        <button class="btn btn-outline" style="flex:1;justify-content:center;" onclick="document.getElementById('photoInput').click()">🖼️ Gallery</button>
+      </div>
+      <div class="photo-grid" id="photoGrid">
+        <div class="photo-add" onclick="document.getElementById('cameraInput').click()">
+          <span class="plus">+</span>
+          <span>Photo Add</span>
+        </div>
+      </div>
+      <input type="file" id="photoInput" accept="image/*" multiple onchange="handlePhotos(this)" />
+      <input type="file" id="cameraInput" accept="image/*" capture="environment" multiple onchange="handlePhotos(this)" />
+      <div id="photoCount" style="text-align:center;margin-top:8px;font-size:11px;color:var(--text-light);">0 photos added</div>
+    </div>
+
+    <div class="field">
+      <label class="field-label">डेंटिस्ट का पूरा नाम <span class="req">*</span></label>
+      <input type="text" id="a_name" placeholder="Dr. पूरा नाम" />
+    </div>
+    <div class="field">
+      <label class="field-label">Qualification</label>
+      <div class="radio-group" id="a_qual">
+        <div class="radio-item" data-val="BDS" onclick="radioSel(this,'a_qual')">BDS</div>
+        <div class="radio-item" data-val="MDS" onclick="radioSel(this,'a_qual')">MDS</div>
+        <div class="radio-item" data-val="BDS+Specialization" onclick="radioSel(this,'a_qual')">BDS + Spec.</div>
+        <div class="radio-item" data-val="Other" onclick="radioSel(this,'a_qual')">Other</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">MDS Specialization (यदि लागू)</label>
+      <input type="text" id="a_mds_spec" placeholder="जैसे Endodontics, Orthodontics..." />
+    </div>
+    <div class="field">
+      <label class="field-label">Clinic का नाम <span class="req">*</span></label>
+      <input type="text" id="a_clinic" placeholder="Clinic name" />
+    </div>
+    <div class="field">
+      <label class="field-label">पूरा पता (मोहल्ला, शहर, जिला, पिनकोड)</label>
+      <textarea id="a_address" placeholder="पूरा पता लिखें..."></textarea>
+    </div>
+    <div class="field">
+      <label class="field-label">Mobile Number <span class="req">*</span></label>
+      <input type="tel" id="a_mobile" placeholder="+91 XXXXXXXXXX" />
+    </div>
+    <div class="field">
+      <label class="field-label">WhatsApp Number (अलग हो तो)</label>
+      <input type="tel" id="a_whatsapp" placeholder="+91 XXXXXXXXXX" />
+    </div>
+    <div class="field">
+      <label class="field-label">Email (वैकल्पिक)</label>
+      <input type="email" id="a_email" placeholder="example@email.com" />
+    </div>
+    <div class="field">
+      <label class="field-label">Google Maps Link (यदि उपलब्ध)</label>
+      <input type="text" id="a_gmaps" placeholder="maps.google.com/..." />
+    </div>
+    <div class="field">
+      <label class="field-label">State Dental Council Reg. No.</label>
+      <input type="text" id="a_regno" placeholder="Registration number" />
+    </div>
+    <div class="field">
+      <label class="field-label">Practice शुरू किए कितने साल? (अनुभव)</label>
+      <input type="number" id="a_exp" placeholder="जैसे: 8" min="0" max="50" />
+    </div>
+
+  </div>
+</div>
+
+<!-- ======= SECTION B ======= -->
+<div class="section-card" id="sec1">
+  <div class="section-header">
+    <div class="section-icon">🏥</div>
+    <div>
+      <div class="section-title">Section B — Clinic Infrastructure</div>
+      <div class="section-subtitle">Facilities & Setup</div>
+    </div>
+  </div>
+  <div class="section-body">
+
+    <div class="field">
+      <label class="field-label">Clinic किसकी है?</label>
+      <div class="radio-group" id="b_ownership">
+        <div class="radio-item" data-val="खुद की" onclick="radioSel(this,'b_ownership')">खुद की</div>
+        <div class="radio-item" data-val="किराए पर" onclick="radioSel(this,'b_ownership')">किराए पर</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Dental Chairs की संख्या</label>
+      <div class="radio-group" id="b_chairs">
+        <div class="radio-item" data-val="1" onclick="radioSel(this,'b_chairs')">1</div>
+        <div class="radio-item" data-val="2" onclick="radioSel(this,'b_chairs')">2</div>
+        <div class="radio-item" data-val="3" onclick="radioSel(this,'b_chairs')">3</div>
+        <div class="radio-item" data-val="4+" onclick="radioSel(this,'b_chairs')">4+</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Waiting Area</label>
+      <div class="radio-group" id="b_waiting">
+        <div class="radio-item" data-val="हाँ — अच्छी" onclick="radioSel(this,'b_waiting')">हाँ — अच्छी</div>
+        <div class="radio-item" data-val="हाँ — सीमित" onclick="radioSel(this,'b_waiting')">हाँ — सीमित</div>
+        <div class="radio-item" data-val="नहीं" onclick="radioSel(this,'b_waiting')">नहीं</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">X-Ray Facility</label>
+      <div class="check-group" id="b_xray">
+        <div class="check-item" data-val="OPG" onclick="checkSel(this,'b_xray')">☐ OPG</div>
+        <div class="check-item" data-val="RVG" onclick="checkSel(this,'b_xray')">☐ RVG</div>
+        <div class="check-item" data-val="Periapical" onclick="checkSel(this,'b_xray')">☐ Periapical</div>
+        <div class="check-item" data-val="कोई नहीं" onclick="checkSel(this,'b_xray')">☐ कोई नहीं</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Sterilization Setup</label>
+      <div class="check-group" id="b_steril">
+        <div class="check-item" data-val="Autoclave" onclick="checkSel(this,'b_steril')">☐ Autoclave</div>
+        <div class="check-item" data-val="Chemical" onclick="checkSel(this,'b_steril')">☐ Chemical</div>
+        <div class="check-item" data-val="UV Cabinet" onclick="checkSel(this,'b_steril')">☐ UV Cabinet</div>
+        <div class="check-item" data-val="नहीं" onclick="checkSel(this,'b_steril')">☐ नहीं</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">AC / Ventilation</label>
+      <div class="radio-group" id="b_ac">
+        <div class="radio-item" data-val="AC है" onclick="radioSel(this,'b_ac')">AC है</div>
+        <div class="radio-item" data-val="Fan only" onclick="radioSel(this,'b_ac')">Fan only</div>
+        <div class="radio-item" data-val="कोई नहीं" onclick="radioSel(this,'b_ac')">कोई नहीं</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Parking सुविधा</label>
+      <div class="radio-group" id="b_parking">
+        <div class="radio-item" data-val="आसान" onclick="radioSel(this,'b_parking')">आसान</div>
+        <div class="radio-item" data-val="कठिन" onclick="radioSel(this,'b_parking')">कठिन</div>
+        <div class="radio-item" data-val="नहीं" onclick="radioSel(this,'b_parking')">नहीं</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Clinic तक पहुँच</label>
+      <div class="check-group" id="b_access">
+        <div class="check-item" data-val="सड़क पर" onclick="checkSel(this,'b_access')">☐ सड़क पर</div>
+        <div class="check-item" data-val="गली में" onclick="checkSel(this,'b_access')">☐ गली में</div>
+        <div class="check-item" data-val="ऊपरी मंज़िल" onclick="checkSel(this,'b_access')">☐ ऊपरी मंज़िल</div>
+        <div class="check-item" data-val="बेसमेंट" onclick="checkSel(this,'b_access')">☐ बेसमेंट</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Clinic Staff</label>
+      <div class="check-group" id="b_staff">
+        <div class="check-item" data-val="Assistant" onclick="checkSel(this,'b_staff')">☐ Assistant</div>
+        <div class="check-item" data-val="Receptionist" onclick="checkSel(this,'b_staff')">☐ Receptionist</div>
+        <div class="check-item" data-val="दोनों" onclick="checkSel(this,'b_staff')">☐ दोनों</div>
+        <div class="check-item" data-val="कोई नहीं" onclick="checkSel(this,'b_staff')">☐ कोई नहीं</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Digital Payment</label>
+      <div class="check-group" id="b_payment">
+        <div class="check-item" data-val="UPI" onclick="checkSel(this,'b_payment')">☐ UPI</div>
+        <div class="check-item" data-val="Card" onclick="checkSel(this,'b_payment')">☐ Card</div>
+        <div class="check-item" data-val="Cash only" onclick="checkSel(this,'b_payment')">☐ Cash only</div>
+        <div class="check-item" data-val="सभी" onclick="checkSel(this,'b_payment')">☐ सभी</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Online Appointment System</label>
+      <div class="radio-group" id="b_appt">
+        <div class="radio-item" data-val="हाँ" onclick="radioSel(this,'b_appt')">हाँ</div>
+        <div class="radio-item" data-val="WhatsApp से" onclick="radioSel(this,'b_appt')">WhatsApp से</div>
+        <div class="radio-item" data-val="नहीं" onclick="radioSel(this,'b_appt')">नहीं</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ======= SECTION C ======= -->
+<div class="section-card" id="sec2">
+  <div class="section-header">
+    <div class="section-icon">💰</div>
+    <div>
+      <div class="section-title">Section C — Services & Fee Structure</div>
+      <div class="section-subtitle">Treatment fees in ₹</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="info-banner">💡 Approximate fee range भरें — Min से Max ₹ में</div>
+    <div id="feeTable"></div>
+    <div class="divider"></div>
+    <div class="field">
+      <label class="field-label">EMI / Installment सुविधा</label>
+      <div class="radio-group" id="c_emi">
+        <div class="radio-item" data-val="हाँ" onclick="radioSel(this,'c_emi')">हाँ</div>
+        <div class="radio-item" data-val="नहीं" onclick="radioSel(this,'c_emi')">नहीं</div>
+        <div class="radio-item" data-val="Selected cases में" onclick="radioSel(this,'c_emi')">Selected cases में</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Insurance-linked treatment accept</label>
+      <div class="radio-group" id="c_insurance">
+        <div class="radio-item" data-val="हाँ" onclick="radioSel(this,'c_insurance')">हाँ</div>
+        <div class="radio-item" data-val="कभी-कभी" onclick="radioSel(this,'c_insurance')">कभी-कभी</div>
+        <div class="radio-item" data-val="नहीं" onclick="radioSel(this,'c_insurance')">नहीं</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Special Package (जैसे Family Pack, Senior Citizen discount)</label>
+      <textarea id="c_packages" placeholder="Details लिखें..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ======= SECTION D ======= -->
+<div class="section-card" id="sec3">
+  <div class="section-header">
+    <div class="section-icon">🧠</div>
+    <div>
+      <div class="section-title">Section D — Patient & Pricing Insights</div>
+      <div class="section-subtitle">Ground reality</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="sub-section-title">▸ D1 — Treatment Cost</div>
+    <div class="field">
+      <label class="field-label">मरीज़ treatment cost ज़्यादा मानते हैं?</label>
+      <div class="rating-row" id="d_costperception"><div class="rating-btn" onclick="ratingSel(this,'d_costperception')">1</div><div class="rating-btn" onclick="ratingSel(this,'d_costperception')">2</div><div class="rating-btn" onclick="ratingSel(this,'d_costperception')">3</div><div class="rating-btn" onclick="ratingSel(this,'d_costperception')">4</div><div class="rating-btn" onclick="ratingSel(this,'d_costperception')">5</div></div>
+      <div class="rating-hint">1 = बहुत कम, 5 = बहुत अधिक</div>
+    </div>
+    <div class="field">
+      <label class="field-label">सबसे ज़्यादा cost objection किस treatment पर?</label>
+      <div class="check-group" id="d_costobj">
+        <div class="check-item" data-val="RCT" onclick="checkSel(this,'d_costobj')">☐ RCT</div>
+        <div class="check-item" data-val="Crown/Cap" onclick="checkSel(this,'d_costobj')">☐ Crown/Cap</div>
+        <div class="check-item" data-val="Implant" onclick="checkSel(this,'d_costobj')">☐ Implant</div>
+        <div class="check-item" data-val="Denture" onclick="checkSel(this,'d_costobj')">☐ Denture</div>
+        <div class="check-item" data-val="Braces" onclick="checkSel(this,'d_costobj')">☐ Braces</div>
+        <div class="check-item" data-val="Scaling" onclick="checkSel(this,'d_costobj')">☐ Scaling</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Cost objection आने पर क्या करते हैं?</label>
+      <div class="check-group" id="d_costobjaction">
+        <div class="check-item" data-val="Explain करते हैं" onclick="checkSel(this,'d_costobjaction')">☐ Explain</div>
+        <div class="check-item" data-val="Discount देते हैं" onclick="checkSel(this,'d_costobjaction')">☐ Discount</div>
+        <div class="check-item" data-val="Cheaper option" onclick="checkSel(this,'d_costobjaction')">☐ Cheaper option</div>
+        <div class="check-item" data-val="मरीज़ चला जाता है" onclick="checkSel(this,'d_costobjaction')">☐ मरीज़ जाता है</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">मरीज़ किस budget में expect करते हैं?</label>
+      <input type="text" id="d_budget" placeholder="जैसे ₹200–500 तक..." />
+    </div>
+    <div class="divider"></div>
+    <div class="sub-section-title">▸ D2 — Discount & Negotiation</div>
+    <div class="field">
+      <label class="field-label">कितने % मरीज़ discount माँगते हैं?</label>
+      <div class="rating-row" id="d_discpct"><div class="rating-btn" onclick="ratingSel(this,'d_discpct')">1</div><div class="rating-btn" onclick="ratingSel(this,'d_discpct')">2</div><div class="rating-btn" onclick="ratingSel(this,'d_discpct')">3</div><div class="rating-btn" onclick="ratingSel(this,'d_discpct')">4</div><div class="rating-btn" onclick="ratingSel(this,'d_discpct')">5</div></div>
+      <div class="rating-hint">1 = बहुत कम, 5 = बहुत अधिक</div>
+    </div>
+    <div class="field">
+      <label class="field-label">Discount देते हैं?</label>
+      <div class="radio-group" id="d_discount">
+        <div class="radio-item" data-val="हाँ — नियमित" onclick="radioSel(this,'d_discount')">हाँ — नियमित</div>
+        <div class="radio-item" data-val="कभी-कभी" onclick="radioSel(this,'d_discount')">कभी-कभी</div>
+        <div class="radio-item" data-val="नहीं" onclick="radioSel(this,'d_discount')">नहीं</div>
+        <div class="radio-item" data-val="Special cases" onclick="radioSel(this,'d_discount')">Special cases</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Discount किस आधार पर?</label>
+      <div class="check-group" id="d_discbasis">
+        <div class="check-item" data-val="परिचित" onclick="checkSel(this,'d_discbasis')">☐ परिचित</div>
+        <div class="check-item" data-val="गरीब मरीज़" onclick="checkSel(this,'d_discbasis')">☐ गरीब मरीज़</div>
+        <div class="check-item" data-val="Multiple treatment" onclick="checkSel(this,'d_discbasis')">☐ Multiple</div>
+        <div class="check-item" data-val="Referral" onclick="checkSel(this,'d_discbasis')">☐ Referral</div>
+        <div class="check-item" data-val="Festival season" onclick="checkSel(this,'d_discbasis')">☐ Festival</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Referral-based discount से comfortable?</label>
+      <div class="radio-group" id="d_refdisc">
+        <div class="radio-item" data-val="हाँ" onclick="radioSel(this,'d_refdisc')">हाँ</div>
+        <div class="radio-item" data-val="नहीं" onclick="radioSel(this,'d_refdisc')">नहीं</div>
+        <div class="radio-item" data-val="Discuss करना है" onclick="radioSel(this,'d_refdisc')">Discuss करना है</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======= SECTION E ======= -->
+<div class="section-card" id="sec4">
+  <div class="section-header">
+    <div class="section-icon">📅</div>
+    <div>
+      <div class="section-title">Section E — Footfall Pattern</div>
+      <div class="section-subtitle">Monthly & Hourly patterns</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="sub-section-title">▸ E1 — Monthly Pattern</div>
+    <div class="month-grid" id="monthGrid"></div>
+    <div class="divider"></div>
+    <div class="field">
+      <label class="field-label">सबसे कम मरीज़ किस season में?</label>
+      <div class="check-group" id="e_lowseasn">
+        <div class="check-item" data-val="गर्मी" onclick="checkSel(this,'e_lowseasn')">☐ गर्मी</div>
+        <div class="check-item" data-val="बरसात" onclick="checkSel(this,'e_lowseasn')">☐ बरसात</div>
+        <div class="check-item" data-val="सर्दी" onclick="checkSel(this,'e_lowseasn')">☐ सर्दी</div>
+        <div class="check-item" data-val="त्योहार" onclick="checkSel(this,'e_lowseasn')">☐ त्योहार</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Low season में daily average patients</label>
+      <input type="number" id="e_lowavg" placeholder="जैसे: 5" />
+    </div>
+    <div class="field">
+      <label class="field-label">Peak season में daily average patients</label>
+      <input type="number" id="e_peakavg" placeholder="जैसे: 20" />
+    </div>
+    <div class="field">
+      <label class="field-label">Weekend पर patients ज़्यादा?</label>
+      <div class="radio-group" id="e_weekend">
+        <div class="radio-item" data-val="हाँ" onclick="radioSel(this,'e_weekend')">हाँ</div>
+        <div class="radio-item" data-val="नहीं" onclick="radioSel(this,'e_weekend')">नहीं</div>
+        <div class="radio-item" data-val="Same रहता है" onclick="radioSel(this,'e_weekend')">Same रहता है</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="sub-section-title">▸ E2 — Hourly Pattern</div>
+    <div class="hour-grid" id="hourGrid"></div>
+    <div class="field" style="margin-top:14px;">
+      <label class="field-label">सबसे व्यस्त समय</label>
+      <div class="radio-group" id="e_busytime">
+        <div class="radio-item" data-val="सुबह 9-12" onclick="radioSel(this,'e_busytime')">सुबह 9–12</div>
+        <div class="radio-item" data-val="दोपहर 12-3" onclick="radioSel(this,'e_busytime')">दोपहर 12–3</div>
+        <div class="radio-item" data-val="शाम 4-7" onclick="radioSel(this,'e_busytime')">शाम 4–7</div>
+        <div class="radio-item" data-val="रात 7-9" onclick="radioSel(this,'e_busytime')">रात 7–9</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">दोपहर में clinic बंद रखते हैं?</label>
+      <div class="radio-group" id="e_lunchclose">
+        <div class="radio-item" data-val="हाँ" onclick="radioSel(this,'e_lunchclose')">हाँ</div>
+        <div class="radio-item" data-val="नहीं" onclick="radioSel(this,'e_lunchclose')">नहीं</div>
+        <div class="radio-item" data-val="कभी-कभी" onclick="radioSel(this,'e_lunchclose')">कभी-कभी</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======= SECTION F ======= -->
+<div class="section-card" id="sec5">
+  <div class="section-header">
+    <div class="section-icon">🤝</div>
+    <div>
+      <div class="section-title">Section F — Patient Behaviour</div>
+      <div class="section-subtitle">Completion, Trust & Awareness</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="sub-section-title">▸ F1 — Treatment Completion</div>
+    <div class="field">
+      <label class="field-label">मरीज़ बीच में treatment छोड़ देते हैं?</label>
+      <div class="rating-row" id="f_dropout"><div class="rating-btn" onclick="ratingSel(this,'f_dropout')">1</div><div class="rating-btn" onclick="ratingSel(this,'f_dropout')">2</div><div class="rating-btn" onclick="ratingSel(this,'f_dropout')">3</div><div class="rating-btn" onclick="ratingSel(this,'f_dropout')">4</div><div class="rating-btn" onclick="ratingSel(this,'f_dropout')">5</div></div>
+      <div class="rating-hint">1 = बहुत कम, 5 = बहुत अधिक</div>
+    </div>
+    <div class="field">
+      <label class="field-label">सबसे ज़्यादा dropout किस treatment में?</label>
+      <div class="check-group" id="f_droptreat">
+        <div class="check-item" data-val="RCT" onclick="checkSel(this,'f_droptreat')">☐ RCT</div>
+        <div class="check-item" data-val="Braces" onclick="checkSel(this,'f_droptreat')">☐ Braces</div>
+        <div class="check-item" data-val="Denture" onclick="checkSel(this,'f_droptreat')">☐ Denture</div>
+        <div class="check-item" data-val="Multiple extractions" onclick="checkSel(this,'f_droptreat')">☐ Multiple Ext.</div>
+        <div class="check-item" data-val="Scaling followup" onclick="checkSel(this,'f_droptreat')">☐ Scaling FU</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Treatment छोड़ने के मुख्य कारण?</label>
+      <div class="check-group" id="f_dropreason">
+        <div class="check-item" data-val="Cost" onclick="checkSel(this,'f_dropreason')">☐ Cost</div>
+        <div class="check-item" data-val="Time नहीं" onclick="checkSel(this,'f_dropreason')">☐ Time नहीं</div>
+        <div class="check-item" data-val="दर्द का डर" onclick="checkSel(this,'f_dropreason')">☐ दर्द का डर</div>
+        <div class="check-item" data-val="Relief मिल गई" onclick="checkSel(this,'f_dropreason')">☐ Relief मिली</div>
+        <div class="check-item" data-val="दूसरे डेंटिस्ट" onclick="checkSel(this,'f_dropreason')">☐ दूसरे डेंटिस्ट</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="sub-section-title">▸ F2 — Self-Medication & Awareness</div>
+    <div class="field">
+      <label class="field-label">मरीज़ पहले chemist से दवा लेकर आते हैं?</label>
+      <div class="rating-row" id="f_selfmed"><div class="rating-btn" onclick="ratingSel(this,'f_selfmed')">1</div><div class="rating-btn" onclick="ratingSel(this,'f_selfmed')">2</div><div class="rating-btn" onclick="ratingSel(this,'f_selfmed')">3</div><div class="rating-btn" onclick="ratingSel(this,'f_selfmed')">4</div><div class="rating-btn" onclick="ratingSel(this,'f_selfmed')">5</div></div>
+      <div class="rating-hint">1 = बहुत कम, 5 = बहुत अधिक</div>
+    </div>
+    <div class="field">
+      <label class="field-label">मरीज़ आमतौर पर किस stage पर आते हैं?</label>
+      <div class="radio-group" id="f_stage">
+        <div class="radio-item" data-val="शुरुआती दर्द में" onclick="radioSel(this,'f_stage')">शुरुआती दर्द में</div>
+        <div class="radio-item" data-val="काफी बढ़ने पर" onclick="radioSel(this,'f_stage')">काफी बढ़ने पर</div>
+        <div class="radio-item" data-val="Emergency में" onclick="radioSel(this,'f_stage')">Emergency में</div>
+        <div class="radio-item" data-val="Routine checkup" onclick="radioSel(this,'f_stage')">Routine checkup</div>
+      </div>
+    </div>
+    <div class="divider"></div>
+    <div class="sub-section-title">▸ F3 — Trust & Loyalty</div>
+    <div class="field">
+      <label class="field-label">मरीज़ दूसरे डेंटिस्ट से opinion लेते हैं?</label>
+      <div class="radio-group" id="f_opinion">
+        <div class="radio-item" data-val="अक्सर" onclick="radioSel(this,'f_opinion')">अक्सर</div>
+        <div class="radio-item" data-val="कभी-कभी" onclick="radioSel(this,'f_opinion')">कभी-कभी</div>
+        <div class="radio-item" data-val="नहीं" onclick="radioSel(this,'f_opinion')">नहीं</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">मरीज़ referred होकर आते हैं (word of mouth)?</label>
+      <div class="radio-group" id="f_referral">
+        <div class="radio-item" data-val="ज़्यादातर" onclick="radioSel(this,'f_referral')">ज़्यादातर</div>
+        <div class="radio-item" data-val="कुछ" onclick="radioSel(this,'f_referral')">कुछ</div>
+        <div class="radio-item" data-val="बहुत कम" onclick="radioSel(this,'f_referral')">बहुत कम</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Google Reviews / Rating</label>
+      <div class="radio-group" id="f_rating">
+        <div class="radio-item" data-val="हाँ — 4+ star" onclick="radioSel(this,'f_rating')">4+ ⭐</div>
+        <div class="radio-item" data-val="हाँ — 3-4 star" onclick="radioSel(this,'f_rating')">3–4 ⭐</div>
+        <div class="radio-item" data-val="नहीं" onclick="radioSel(this,'f_rating')">नहीं</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">मरीज़ के साथ सबसे बड़ी challenge क्या है?</label>
+      <textarea id="f_challenge" placeholder="अपने शब्दों में लिखें..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ======= SECTION G ======= -->
+<div class="section-card" id="sec6">
+  <div class="section-header">
+    <div class="section-icon">🏙️</div>
+    <div>
+      <div class="section-title">Section G — Local Market</div>
+      <div class="section-subtitle">Competition & Area Insights</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="field">
+      <label class="field-label">आसपास कितने dental clinics?</label>
+      <div class="radio-group" id="g_competitors">
+        <div class="radio-item" data-val="1-2" onclick="radioSel(this,'g_competitors')">1–2</div>
+        <div class="radio-item" data-val="3-5" onclick="radioSel(this,'g_competitors')">3–5</div>
+        <div class="radio-item" data-val="5-10" onclick="radioSel(this,'g_competitors')">5–10</div>
+        <div class="radio-item" data-val="10+" onclick="radioSel(this,'g_competitors')">10+</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Nearest competitor कितनी दूरी पर?</label>
+      <div class="radio-group" id="g_compdist">
+        <div class="radio-item" data-val="100m" onclick="radioSel(this,'g_compdist')">100 मीटर</div>
+        <div class="radio-item" data-val="500m" onclick="radioSel(this,'g_compdist')">500 मीटर</div>
+        <div class="radio-item" data-val="1km" onclick="radioSel(this,'g_compdist')">1 km</div>
+        <div class="radio-item" data-val="1km+" onclick="radioSel(this,'g_compdist')">1+ km</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Clinic की सबसे बड़ी USP</label>
+      <div class="check-group" id="g_usp">
+        <div class="check-item" data-val="Quality" onclick="checkSel(this,'g_usp')">☐ Quality</div>
+        <div class="check-item" data-val="Price" onclick="checkSel(this,'g_usp')">☐ Price</div>
+        <div class="check-item" data-val="Experience" onclick="checkSel(this,'g_usp')">☐ Experience</div>
+        <div class="check-item" data-val="Location" onclick="checkSel(this,'g_usp')">☐ Location</div>
+        <div class="check-item" data-val="Trust" onclick="checkSel(this,'g_usp')">☐ Trust</div>
+        <div class="check-item" data-val="Speed" onclick="checkSel(this,'g_usp')">☐ Speed</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">मुख्य patient type</label>
+      <div class="radio-group" id="g_pattype">
+        <div class="radio-item" data-val="Lower income" onclick="radioSel(this,'g_pattype')">Lower income</div>
+        <div class="radio-item" data-val="Middle class" onclick="radioSel(this,'g_pattype')">Middle class</div>
+        <div class="radio-item" data-val="Upper middle" onclick="radioSel(this,'g_pattype')">Upper middle</div>
+        <div class="radio-item" data-val="Mixed" onclick="radioSel(this,'g_pattype')">Mixed</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Area में dental awareness</label>
+      <div class="radio-group" id="g_awareness">
+        <div class="radio-item" data-val="बहुत कम" onclick="radioSel(this,'g_awareness')">बहुत कम</div>
+        <div class="radio-item" data-val="थोड़ी" onclick="radioSel(this,'g_awareness')">थोड़ी</div>
+        <div class="radio-item" data-val="अच्छी" onclick="radioSel(this,'g_awareness')">अच्छी</div>
+        <div class="radio-item" data-val="बहुत अच्छी" onclick="radioSel(this,'g_awareness')">बहुत अच्छी</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Area की सबसे बड़ी dental health problem</label>
+      <input type="text" id="g_bigproblem" placeholder="जैसे पान-तंबाकू, fluorosis..." />
+    </div>
+    <div class="field">
+      <label class="field-label">Govt. dental camp / scheme का असर</label>
+      <textarea id="g_govtcamp" placeholder="असर बताएँ..."></textarea>
+    </div>
+  </div>
+</div>
+
+<!-- ======= SECTION H ======= -->
+<div class="section-card" id="sec7">
+  <div class="section-header">
+    <div class="section-icon">📱</div>
+    <div>
+      <div class="section-title">Section H — Digital Readiness</div>
+      <div class="section-subtitle">Tech & Referral Readiness</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="field">
+      <label class="field-label">Smartphone regularly use करते हैं?</label>
+      <div class="radio-group" id="h_smartphone">
+        <div class="radio-item" data-val="हाँ" onclick="radioSel(this,'h_smartphone')">हाँ</div>
+        <div class="radio-item" data-val="नहीं" onclick="radioSel(this,'h_smartphone')">नहीं</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">WhatsApp पर case photos share कर सकते हैं?</label>
+      <div class="radio-group" id="h_waphotos">
+        <div class="radio-item" data-val="हाँ" onclick="radioSel(this,'h_waphotos')">हाँ</div>
+        <div class="radio-item" data-val="Privacy concern" onclick="radioSel(this,'h_waphotos')">Privacy concern</div>
+        <div class="radio-item" data-val="नहीं" onclick="radioSel(this,'h_waphotos')">नहीं</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Digital prescription / record रखते हैं?</label>
+      <div class="radio-group" id="h_digirec">
+        <div class="radio-item" data-val="हाँ" onclick="radioSel(this,'h_digirec')">हाँ</div>
+        <div class="radio-item" data-val="Partially" onclick="radioSel(this,'h_digirec')">Partially</div>
+        <div class="radio-item" data-val="नहीं" onclick="radioSel(this,'h_digirec')">नहीं</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Social Media presence</label>
+      <div class="check-group" id="h_social">
+        <div class="check-item" data-val="Facebook" onclick="checkSel(this,'h_social')">☐ Facebook</div>
+        <div class="check-item" data-val="Instagram" onclick="checkSel(this,'h_social')">☐ Instagram</div>
+        <div class="check-item" data-val="YouTube" onclick="checkSel(this,'h_social')">☐ YouTube</div>
+        <div class="check-item" data-val="None" onclick="checkSel(this,'h_social')">☐ None</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Online booking system सीखने में willing?</label>
+      <div class="radio-group" id="h_bookwilling">
+        <div class="radio-item" data-val="हाँ" onclick="radioSel(this,'h_bookwilling')">हाँ</div>
+        <div class="radio-item" data-val="Training के साथ" onclick="radioSel(this,'h_bookwilling')">Training के साथ</div>
+        <div class="radio-item" data-val="नहीं" onclick="radioSel(this,'h_bookwilling')">नहीं</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Referred patients को priority slot देने में OK?</label>
+      <div class="radio-group" id="h_priorityslot">
+        <div class="radio-item" data-val="हाँ" onclick="radioSel(this,'h_priorityslot')">हाँ</div>
+        <div class="radio-item" data-val="Discuss करना है" onclick="radioSel(this,'h_priorityslot')">Discuss करना है</div>
+        <div class="radio-item" data-val="नहीं" onclick="radioSel(this,'h_priorityslot')">नहीं</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">Monthly summary report share करेंगे?</label>
+      <div class="radio-group" id="h_report">
+        <div class="radio-item" data-val="हाँ" onclick="radioSel(this,'h_report')">हाँ</div>
+        <div class="radio-item" data-val="Quarterly ठीक है" onclick="radioSel(this,'h_report')">Quarterly ठीक</div>
+        <div class="radio-item" data-val="नहीं" onclick="radioSel(this,'h_report')">नहीं</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======= SECTION I ======= -->
+<div class="section-card" id="sec8">
+  <div class="section-header">
+    <div class="section-icon">🎯</div>
+    <div>
+      <div class="section-title">Section I — Expectations & Declaration</div>
+      <div class="section-subtitle">Final details + Sign off</div>
+    </div>
+  </div>
+  <div class="section-body">
+    <div class="field">
+      <label class="field-label">Empanelment से मुख्य अपेक्षा?</label>
+      <div class="check-group" id="i_expect">
+        <div class="check-item" data-val="ज़्यादा patients" onclick="checkSel(this,'i_expect')">☐ ज़्यादा patients</div>
+        <div class="check-item" data-val="Brand association" onclick="checkSel(this,'i_expect')">☐ Brand</div>
+        <div class="check-item" data-val="Digital presence" onclick="checkSel(this,'i_expect')">☐ Digital</div>
+        <div class="check-item" data-val="Income support" onclick="checkSel(this,'i_expect')">☐ Income</div>
+        <div class="check-item" data-val="Community service" onclick="checkSel(this,'i_expect')">☐ Community</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">किस type की cases refer नहीं चाहते?</label>
+      <textarea id="i_notrefer" placeholder="जैसे only emergency, no cosmetic..."></textarea>
+    </div>
+    <div class="field">
+      <label class="field-label">Empanelment में कोई शर्त?</label>
+      <textarea id="i_condition" placeholder="कोई शर्त हो तो लिखें..."></textarea>
+    </div>
+    <div class="field">
+      <label class="field-label">Platform को और बेहतर कैसे देखना चाहते हैं?</label>
+      <textarea id="i_suggestion" placeholder="Suggestions..."></textarea>
+    </div>
+    <div class="field">
+      <label class="field-label">कोई अतिरिक्त जानकारी</label>
+      <textarea id="i_extra" placeholder="कुछ और जानकारी share करनी हो..."></textarea>
+    </div>
+    <div class="field">
+      <label class="field-label">Executive Notes (Internal)</label>
+      <textarea id="i_excnotes" placeholder="Visit की internal observations, dentist का attitude, infrastructure की actual condition..."></textarea>
+    </div>
+    <div class="field">
+      <label class="field-label">Empanelment Recommendation</label>
+      <div class="radio-group" id="i_recommend">
+        <div class="radio-item" data-val="✅ Strongly Recommend" onclick="radioSel(this,'i_recommend')" style="background:#E8F5E9;border-color:#2E7D32;color:#1B5E20;">✅ Strongly</div>
+        <div class="radio-item" data-val="👍 Recommend" onclick="radioSel(this,'i_recommend')">👍 Recommend</div>
+        <div class="radio-item" data-val="⏳ Needs Review" onclick="radioSel(this,'i_recommend')" style="background:#FFF8E1;border-color:#F9A825;color:#E65100;">⏳ Needs Review</div>
+        <div class="radio-item" data-val="❌ Not Recommended" onclick="radioSel(this,'i_recommend')" style="background:#FFEBEE;border-color:#C62828;color:#B71C1C;">❌ Not Rec.</div>
+      </div>
+    </div>
+
+    <div style="background:var(--teal-light);border-radius:12px;padding:16px;margin-top:10px;text-align:center;">
+      <div style="font-size:13px;color:var(--teal-dark);font-weight:600;margin-bottom:8px;">घोषणा / Declaration</div>
+      <div style="font-size:12px;color:var(--text-mid);line-height:1.5;">मैं प्रमाणित करता/करती हूँ कि उपरोक्त जानकारी पूर्णतः सत्य है।</div>
+    </div>
+
+    <div style="margin-top:16px;display:flex;gap:10px;">
+      <div style="flex:1;">
+        <label class="field-label">डेंटिस्ट का नाम</label>
+        <input type="text" id="i_signname" placeholder="Dr. ..." />
+      </div>
+      <div style="flex:1;">
+        <label class="field-label">दिनांक</label>
+        <input type="date" id="i_date" />
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV BUTTONS -->
+<div class="nav-btns">
+  <button class="btn btn-outline" id="btnPrev" onclick="navigate(-1)" style="display:none">← पीछे</button>
+  <button class="btn btn-teal" id="btnNext" onclick="navigate(1)">आगे →</button>
+  <button class="btn btn-accent" id="btnSubmit" onclick="showSubmit()" style="display:none">🎯 Submit करें</button>
+</div>
+
+<!-- SUBMIT OVERLAY -->
+<div class="submit-overlay" id="submitOverlay">
+  <div class="submit-modal">
+
+    <!-- DEFAULT STATE -->
+    <div id="modalDefault">
+      <div class="big-icon">🎯</div>
+      <h2>Submit करें</h2>
+      <p style="margin-bottom:14px;">Google Sheets में भेजें या JSON backup download करें।</p>
+
+      <button class="btn btn-teal btn-full" onclick="submitToSheets()" style="margin-bottom:10px;">
+        📊 Google Sheets में Submit करें
+      </button>
+      <button class="btn btn-outline btn-full" onclick="downloadJSON()" style="margin-bottom:10px;">
+        📥 JSON Download करें (backup)
+      </button>
+      <button class="btn" onclick="document.getElementById('submitOverlay').classList.remove('show')" style="width:100%;justify-content:center;color:var(--text-light);font-size:13px;background:none;border:none;padding:8px;">
+        ← वापस जाएँ
+      </button>
+    </div>
+
+    <!-- SENDING STATE -->
+    <div id="modalSending" style="display:none;">
+      <div class="big-icon" style="animation:spin 1s linear infinite;display:inline-block;">⏳</div>
+      <h2>भेजा जा रहा है...</h2>
+      <p>Google Sheets से connect हो रहा है</p>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div id="modalSuccess" style="display:none;">
+      <div class="big-icon">✅</div>
+      <h2 style="color:var(--success);">Sheet में Save हो गया!</h2>
+      <p id="successMsg" style="margin-bottom:16px;"></p>
+      <button class="btn btn-teal btn-full" onclick="resetModal()" style="margin-bottom:8px;">
+        नया Form भरें
+      </button>
+      <button class="btn btn-outline btn-full" onclick="downloadJSON()">
+        📥 JSON भी Download करें
+      </button>
+    </div>
+
+    <!-- ERROR STATE -->
+    <div id="modalError" style="display:none;">
+      <div class="big-icon">❌</div>
+      <h2 style="color:var(--danger);">Error आया</h2>
+      <p id="errorMsg" style="margin-bottom:14px;color:var(--danger);font-size:12px;"></p>
+      <button class="btn btn-outline btn-full" onclick="downloadJSON()" style="margin-bottom:8px;">
+        📥 JSON Download करें (offline backup)
+      </button>
+      <button class="btn" onclick="showModalState('default')" style="width:100%;justify-content:center;color:var(--text-light);font-size:13px;background:none;border:none;padding:8px;">
+        ← Try Again
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<!-- SETTINGS PANEL (Script URL configure करने के लिए) -->
+<div style="position:fixed;bottom:72px;right:14px;z-index:60;">
+  <button onclick="toggleSettings()" style="width:42px;height:42px;border-radius:50%;background:var(--teal);color:#fff;border:none;font-size:18px;cursor:pointer;box-shadow:0 2px 10px rgba(0,137,123,0.4);" title="Settings">⚙️</button>
+</div>
+
+<div id="settingsPanel" style="display:none;position:fixed;bottom:120px;right:14px;z-index:60;background:#fff;border-radius:14px;padding:16px;width:300px;box-shadow:0 8px 30px rgba(0,0,0,0.15);border:2px solid var(--border);">
+  <div style="font-size:13px;font-weight:700;color:var(--teal-dark);margin-bottom:8px;">⚙️ Google Sheets Setup</div>
+  <div style="font-size:11px;color:var(--text-light);margin-bottom:10px;line-height:1.5;">
+    Apps Script deploy करने के बाद Web App URL यहाँ paste करें।
+  </div>
+  <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/..." style="font-size:12px;padding:9px;border:2px solid var(--border);border-radius:8px;width:100%;margin-bottom:8px;" />
+  <button class="btn btn-teal btn-full btn-sm" onclick="saveScriptUrl()">💾 Save URL</button>
+  <div id="urlStatus" style="font-size:11px;margin-top:6px;color:var(--text-light);"></div>
+</div>
+
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+</style>
+
+<script>
+  // ========= DATA STORE =========
+  let currentSection = 0;
+  let gpsData = null;
+  let photos = [];
+  const SECTIONS = 9;
+
+  // ========= FEES =========
+  const treatments = [
+    'Consultation Fee','Scaling / Cleaning','Simple Extraction','Surgical Extraction',
+    'Root Canal — Single canal','Root Canal — Multi canal','Tooth Filling (Composite)',
+    'Crown (Metal/Ceramic/Zirconia)','Complete Denture (per jaw)','Partial Denture',
+    'Braces (Orthodontic)','Teeth Whitening','Implant','X-Ray (per film)','OPG'
+  ];
+  const months = ['April','May','June','July','August','September','October','November','December','January','February','March'];
+  const hours = ['8–9 AM','9–10 AM','10–11 AM','11–12 PM','12–1 PM','1–2 PM','2–3 PM','3–4 PM','4–5 PM','5–6 PM','6–7 PM','7–8 PM'];
+
+  // ========= BUILD FEE TABLE =========
+  const feeDiv = document.getElementById('feeTable');
+  treatments.forEach(t => {
+    const id = 'fee_' + t.replace(/[^a-z0-9]/gi,'_');
+    feeDiv.innerHTML += `<div class="fee-row">
+      <div class="fee-name">${t}</div>
+      <div class="fee-inputs">
+        <input type="number" id="${id}_min" placeholder="Min" min="0">
+        <span class="fee-sep">—</span>
+        <input type="number" id="${id}_max" placeholder="Max" min="0">
+      </div>
+    </div>`;
+  });
+
+  // ========= BUILD MONTH GRID =========
+  const mgDiv = document.getElementById('monthGrid');
+  months.forEach(m => {
+    const id = 'month_' + m;
+    mgDiv.innerHTML += `<div class="month-cell">
+      <div class="month-name">${m}</div>
+      <input type="number" id="${id}_avg" placeholder="Avg/day" />
+      <div class="radio-group" id="${id}_type" style="gap:4px;">
+        <div class="radio-item" data-val="Peak" onclick="radioSel(this,'${id}_type')" style="padding:4px 7px;font-size:10px;">Peak</div>
+        <div class="radio-item" data-val="Normal" onclick="radioSel(this,'${id}_type')" style="padding:4px 7px;font-size:10px;">Normal</div>
+        <div class="radio-item" data-val="Low" onclick="radioSel(this,'${id}_type')" style="padding:4px 7px;font-size:10px;">Low</div>
+      </div>
+    </div>`;
+  });
+
+  // ========= BUILD HOUR GRID =========
+  const hgDiv = document.getElementById('hourGrid');
+  hours.forEach(h => {
+    const id = 'hour_' + h.replace(/[^a-z0-9]/gi,'_');
+    hgDiv.innerHTML += `<div class="hour-cell">
+      <div class="hour-label">${h}</div>
+      <div class="radio-group" id="${id}" style="gap:4px;">
+        <div class="radio-item" data-val="High" onclick="radioSel(this,'${id}')" style="padding:5px 8px;font-size:11px;">High</div>
+        <div class="radio-item" data-val="Mid" onclick="radioSel(this,'${id}')" style="padding:5px 8px;font-size:11px;">Mid</div>
+        <div class="radio-item" data-val="Low" onclick="radioSel(this,'${id}')" style="padding:5px 8px;font-size:11px;">Low</div>
+        <div class="radio-item" data-val="Nil" onclick="radioSel(this,'${id}')" style="padding:5px 8px;font-size:11px;">Nil</div>
+      </div>
+    </div>`;
+  });
+
+  // Set today's date
+  document.getElementById('i_date').valueAsDate = new Date();
+
+  // ========= GPS =========
+  function captureGPS() {
+    const status = document.getElementById('gpsStatus');
+    const display = document.getElementById('gpsDisplay');
+    status.className = 'gps-status';
+    status.innerHTML = '⏳ Location capture हो रही है...';
+    status.style.display = 'flex';
+    if (!navigator.geolocation) {
+      status.className = 'gps-status error';
+      status.innerHTML = '❌ Browser location support नहीं करता';
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        gpsData = {
+          lat: pos.coords.latitude.toFixed(6),
+          lng: pos.coords.longitude.toFixed(6),
+          accuracy: Math.round(pos.coords.accuracy),
+          timestamp: new Date().toISOString()
+        };
+        status.className = 'gps-status success';
+        status.innerHTML = `✅ Location Tagged! Accuracy: ±${gpsData.accuracy}m`;
+        display.style.display = 'block';
+        display.innerHTML = `📍 ${gpsData.lat}, ${gpsData.lng} | <a href="https://maps.google.com/?q=${gpsData.lat},${gpsData.lng}" target="_blank" style="color:var(--teal)">Map देखें</a>`;
+      },
+      err => {
+        status.className = 'gps-status error';
+        const errMsg = {1:'Permission denied — Browser settings में Location allow करें।', 2:'Location unavailable — बाहर जाकर try करें।', 3:'Timeout — दोबारा try करें।'};
+        status.innerHTML = '❌ ' + (errMsg[err.code] || 'Location error: ' + err.message);
+      },
+      { enableHighAccuracy: true, timeout: 30000, maximumAge: 0 }
+    );
+  }
+
+  // ========= PHOTOS =========
+  function handlePhotos(input) {
+    const files = Array.from(input.files);
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = e => {
+        photos.push({ name: file.name, data: e.target.result });
+        renderPhotos();
+      };
+      reader.readAsDataURL(file);
+    });
+    input.value = '';
+  }
+
+  function renderPhotos() {
+    const grid = document.getElementById('photoGrid');
+    grid.innerHTML = '';
+    photos.forEach((p, i) => {
+      grid.innerHTML += `<div class="photo-thumb">
+        <img src="${p.data}" alt="clinic" />
+        <button class="photo-remove" onclick="removePhoto(${i})">✕</button>
+      </div>`;
+    });
+    grid.innerHTML += `<div class="photo-add" onclick="document.getElementById('photoInput').click()">
+      <span class="plus">+</span><span>Add</span>
+    </div>`;
+    document.getElementById('photoCount').textContent = `${photos.length} photo${photos.length !== 1 ? 's' : ''} added`;
+  }
+
+  function removePhoto(i) {
+    photos.splice(i, 1);
+    renderPhotos();
+  }
+
+  // ========= RADIO / CHECK / RATING =========
+  function radioSel(el, groupId) {
+    const group = document.getElementById(groupId);
+    if (!group) return;
+    group.querySelectorAll('.radio-item').forEach(r => r.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function checkSel(el, groupId) {
+    el.classList.toggle('selected');
+    const txt = el.dataset.val;
+    el.innerHTML = (el.classList.contains('selected') ? '✓ ' : '☐ ') + txt;
+  }
+
+  function ratingSel(el, groupId) {
+    const group = document.getElementById(groupId);
+    if (!group) return;
+    group.querySelectorAll('.rating-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  // ========= NAVIGATION =========
+  function goTo(idx) {
+    document.querySelectorAll('.section-card').forEach((c, i) => {
+      c.classList.toggle('active', i === idx);
+    });
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      t.classList.toggle('active', i === idx);
+    });
+    currentSection = idx;
+    updateUI();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function navigate(dir) {
+    const next = currentSection + dir;
+    if (next >= 0 && next < SECTIONS) goTo(next);
+  }
+
+  function updateUI() {
+    const pct = Math.round(((currentSection + 1) / SECTIONS) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressText').textContent = `Section ${currentSection + 1} of ${SECTIONS}`;
+    document.getElementById('progressPct').textContent = pct + '%';
+
+    document.getElementById('btnPrev').style.display = currentSection > 0 ? 'flex' : 'none';
+    document.getElementById('btnNext').style.display = currentSection < SECTIONS - 1 ? 'flex' : 'none';
+    document.getElementById('btnSubmit').style.display = currentSection === SECTIONS - 1 ? 'flex' : 'none';
+
+    // Mark tabs completed
+    document.querySelectorAll('.tab').forEach((t, i) => {
+      if (i < currentSection) t.classList.add('completed');
+      else t.classList.remove('completed');
+    });
+  }
+
+  // ========= COLLECT DATA =========
+  function collectData() {
+    const get = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+    const getRadio = gid => { const el = document.querySelector(`#${gid} .radio-item.selected`); return el ? el.dataset.val : ''; };
+    const getChecks = gid => Array.from(document.querySelectorAll(`#${gid} .check-item.selected`)).map(e => e.dataset.val);
+    const getRating = gid => { const el = document.querySelector(`#${gid} .rating-btn.selected`); return el ? el.textContent : ''; };
+
+    // Fees
+    const fees = {};
+    treatments.forEach(t => {
+      const id = 'fee_' + t.replace(/[^a-z0-9]/gi,'_');
+      fees[t] = { min: get(id+'_min'), max: get(id+'_max') };
+    });
+
+    // Monthly
+    const monthly = {};
+    months.forEach(m => {
+      monthly[m] = { avg: get('month_'+m+'_avg'), type: getRadio('month_'+m+'_type') };
+    });
+
+    // Hourly
+    const hourly = {};
+    hours.forEach(h => {
+      const id = 'hour_' + h.replace(/[^a-z0-9]/gi,'_');
+      hourly[h] = getRadio(id);
+    });
+
+    return {
+      meta: {
+        executive: document.getElementById('execName').value,
+        form_version: 'Oraly-v1.0',
+        submitted_at: new Date().toISOString(),
+        gps: gpsData,
+        photos_count: photos.length
+      },
+      sectionA: {
+        name: get('a_name'), qualification: getRadio('a_qual'),
+        mds_spec: get('a_mds_spec'), clinic_name: get('a_clinic'),
+        address: get('a_address'), mobile: get('a_mobile'),
+        whatsapp: get('a_whatsapp'), email: get('a_email'),
+        gmaps: get('a_gmaps'), reg_no: get('a_regno'),
+        experience_years: get('a_exp')
+      },
+      sectionB: {
+        ownership: getRadio('b_ownership'), chairs: getRadio('b_chairs'),
+        waiting: getRadio('b_waiting'), xray: getChecks('b_xray'),
+        sterilization: getChecks('b_steril'), ac: getRadio('b_ac'),
+        parking: getRadio('b_parking'), access: getChecks('b_access'),
+        staff: getChecks('b_staff'), payment: getChecks('b_payment'),
+        appointment: getRadio('b_appt')
+      },
+      sectionC: { fees, emi: getRadio('c_emi'), insurance: getRadio('c_insurance'), packages: get('c_packages') },
+      sectionD: {
+        cost_perception: getRating('d_costperception'), cost_objection_on: getChecks('d_costobj'),
+        cost_action: getChecks('d_costobjaction'), patient_budget: get('d_budget'),
+        discount_pct: getRating('d_discpct'), gives_discount: getRadio('d_discount'),
+        discount_basis: getChecks('d_discbasis'), referral_discount: getRadio('d_refdisc')
+      },
+      sectionE: { monthly, low_season: getChecks('e_lowseasn'), low_avg: get('e_lowavg'), peak_avg: get('e_peakavg'), weekend: getRadio('e_weekend'), hourly, busiest_time: getRadio('e_busytime'), lunch_close: getRadio('e_lunchclose') },
+      sectionF: {
+        dropout_rate: getRating('f_dropout'), dropout_treatment: getChecks('f_droptreat'),
+        dropout_reason: getChecks('f_dropreason'), self_med: getRating('f_selfmed'),
+        patient_stage: getRadio('f_stage'), second_opinion: getRadio('f_opinion'),
+        word_of_mouth: getRadio('f_referral'), google_rating: getRadio('f_rating'),
+        biggest_challenge: get('f_challenge')
+      },
+      sectionG: {
+        competitor_count: getRadio('g_competitors'), competitor_dist: getRadio('g_compdist'),
+        usp: getChecks('g_usp'), patient_type: getRadio('g_pattype'),
+        area_awareness: getRadio('g_awareness'), big_problem: get('g_bigproblem'),
+        govt_camp: get('g_govtcamp')
+      },
+      sectionH: {
+        smartphone: getRadio('h_smartphone'), wa_photos: getRadio('h_waphotos'),
+        digital_rec: getRadio('h_digirec'), social: getChecks('h_social'),
+        booking_willing: getRadio('h_bookwilling'), priority_slot: getRadio('h_priorityslot'),
+        monthly_report: getRadio('h_report')
+      },
+      sectionI: {
+        expectations: getChecks('i_expect'), no_refer: get('i_notrefer'),
+        conditions: get('i_condition'), suggestion: get('i_suggestion'),
+        extra: get('i_extra'), exec_notes: get('i_excnotes'),
+        recommendation: getRadio('i_recommend'),
+        signatory_name: get('i_signname'), date: get('i_date')
+      }
+    };
+  }
+
+  function showSubmit() {
+    showModalState('default');
+    document.getElementById('submitOverlay').classList.add('show');
+  }
+
+  function showModalState(state) {
+    ['default','sending','success','error'].forEach(s => {
+      document.getElementById('modal' + s.charAt(0).toUpperCase() + s.slice(1)).style.display = s === state ? 'block' : 'none';
+    });
+  }
+
+  function resetModal() {
+    document.getElementById('submitOverlay').classList.remove('show');
+    window.location.reload();
+  }
+
+  // ========= SETTINGS =========
+  let SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxSRwMsu7s7sWbKmwmlerqLHEKP82sx6Rf80dOUkoRdgoTyqMqMa2r0RBvFNQfEPwWuVQ/exec';
+
+  function toggleSettings() {
+    const p = document.getElementById('settingsPanel');
+    p.style.display = p.style.display === 'none' ? 'block' : 'none';
+    document.getElementById('scriptUrl').value = SCRIPT_URL;
+    updateUrlStatus();
+  }
+
+  function saveScriptUrl() {
+    SCRIPT_URL = document.getElementById('scriptUrl').value.trim();
+    localStorage.setItem('oraly_script_url', SCRIPT_URL);
+    updateUrlStatus();
+  }
+
+  function updateUrlStatus() {
+    const el = document.getElementById('urlStatus');
+    if (SCRIPT_URL && SCRIPT_URL.includes('script.google.com')) {
+      el.innerHTML = '✅ URL saved! Form ready to submit.';
+      el.style.color = 'var(--success)';
+    } else if (SCRIPT_URL) {
+      el.innerHTML = '⚠️ URL format सही नहीं लग रहा।';
+      el.style.color = 'var(--accent)';
+    } else {
+      el.innerHTML = '⬆️ Apps Script URL paste करें।';
+      el.style.color = 'var(--text-light)';
+    }
+  }
+
+  // Load saved URL on init
+  if (SCRIPT_URL) document.getElementById('scriptUrl') && (document.getElementById('scriptUrl').value = SCRIPT_URL);
+
+  // ========= GOOGLE SHEETS SUBMIT =========
+  async function submitToSheets() {
+    SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxSRwMsu7s7sWbKmwmlerqLHEKP82sx6Rf80dOUkoRdgoTyqMqMa2r0RBvFNQfEPwWuVQ/exec';
+    if (!SCRIPT_URL || !SCRIPT_URL.includes('script.google.com')) {
+      alert('⚙️ पहले Settings (⚙️ button) में Apps Script URL save करें।');
+      return;
+    }
+
+    const data = collectData();
+
+    // Validate minimum required fields
+    if (!data.sectionA.name || !data.sectionA.clinic_name) {
+      alert('⚠️ Section A में Doctor का नाम और Clinic का नाम ज़रूरी है।');
+      document.getElementById('submitOverlay').classList.remove('show');
+      goTo(0);
+      return;
+    }
+
+    showModalState('sending');
+
+    try {
+      // Google Apps Script via no-cors (fire-and-forget)
+      // We use an iframe trick to get around CORS for Apps Script
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      // With no-cors we can't read response, but if no error thrown, it went through
+      const clinicName = data.sectionA.clinic_name;
+      document.getElementById('successMsg').textContent =
+        `"${clinicName}" का data Google Sheets में save हो गया। Executive: ${data.meta.executive || 'N/A'}`;
+      showModalState('success');
+
+      // Also auto-download JSON backup
+      triggerDownload(data);
+
+    } catch (err) {
+      document.getElementById('errorMsg').textContent =
+        `Network error: ${err.message}. Internet connection check करें या JSON download करके manually save करें।`;
+      showModalState('error');
+    }
+  }
+
+  function triggerDownload(data) {
+    const clinicName = (data.sectionA.clinic_name || 'clinic').replace(/[^a-z0-9]/gi,'_');
+    const dateStr = new Date().toISOString().split('T')[0];
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `oraly_${clinicName}_${dateStr}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function downloadJSON() {
+    const data = collectData();
+    triggerDownload(data);
+    document.getElementById('submitOverlay').classList.remove('show');
+  }
+
+  // INIT
+  updateUI();
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(() => console.log('SW registered'))
+        .catch(e => console.log('SW error:', e));
+    });
+  }
+</script>
+</body>
+</html>
