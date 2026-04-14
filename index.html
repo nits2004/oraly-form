@@ -9,6 +9,12 @@
 <meta name="apple-mobile-web-app-title" content="Oraly">
 <meta name="theme-color" content="#00897B">
 <link rel="manifest" href="./manifest.json">
+
+<!-- ✅ HINDI FONT FIX: Noto Sans Devanagari -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
 <title>Oraly — Dentist Empanelment Form</title>
 <style>
   :root {
@@ -28,16 +34,21 @@
     --success: #2E7D32;
     --radius: 14px;
     --shadow: 0 2px 12px rgba(0,137,123,0.10);
+    /* ✅ FIX: Devanagari-optimized font stack */
+    --font: 'Noto Sans Devanagari', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    /* ✅ FIX: Noto Sans Devanagari as primary font */
+    font-family: var(--font);
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
     padding-bottom: 80px;
+    /* ✅ FIX: Devanagari needs extra line-height */
+    line-height: 1.6;
   }
 
   /* HEADER */
@@ -54,12 +65,14 @@
     font-weight: 700;
     color: #fff;
     letter-spacing: -0.5px;
+    font-family: 'Inter', sans-serif;
   }
   .header-logo span { color: var(--teal-mid); }
   .header-sub {
     font-size: 12px;
     color: rgba(255,255,255,0.75);
     margin-top: 3px;
+    font-family: var(--font);
   }
 
   /* PROGRESS BAR */
@@ -104,6 +117,7 @@
     color: var(--text-light);
     cursor: pointer;
     transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
   }
   .tab.active {
     background: var(--teal);
@@ -150,12 +164,14 @@
     font-size: 15px;
     font-weight: 700;
     color: var(--teal-dark);
-    line-height: 1.2;
+    line-height: 1.4;
+    font-family: var(--font);
   }
   .section-subtitle {
     font-size: 11px;
     color: var(--text-light);
     margin-top: 2px;
+    font-family: var(--font);
   }
 
   .section-body { padding: 16px 18px; }
@@ -168,14 +184,18 @@
     color: var(--text-mid);
     margin-bottom: 7px;
     display: block;
-    line-height: 1.4;
+    /* ✅ FIX: Hindi labels need more line-height */
+    line-height: 1.7;
+    font-family: var(--font);
   }
   .field-label .req { color: var(--danger); margin-left: 3px; }
 
+  /* ✅ FIX: All inputs use Devanagari font */
   input[type="text"],
   input[type="tel"],
   input[type="email"],
   input[type="number"],
+  input[type="date"],
   textarea,
   select {
     width: 100%;
@@ -183,11 +203,12 @@
     border: 2px solid var(--border);
     border-radius: 10px;
     font-size: 14px;
-    font-family: inherit;
+    font-family: var(--font);
     color: var(--text);
     background: #FAFCFC;
     transition: border 0.2s;
     -webkit-appearance: none;
+    line-height: 1.6;
   }
   input:focus, textarea:focus, select:focus {
     outline: none;
@@ -212,9 +233,11 @@
     border-radius: 8px;
     cursor: pointer;
     font-size: 13px;
+    font-family: var(--font);
     background: #FAFCFC;
     transition: all 0.15s;
     user-select: none;
+    line-height: 1.5;
   }
   .check-item.selected {
     border-color: var(--teal);
@@ -224,7 +247,7 @@
   }
   .check-item input { display: none; }
 
-  /* RADIO GROUP (single select chips) */
+  /* RADIO GROUP */
   .radio-group {
     display: flex;
     flex-wrap: wrap;
@@ -240,9 +263,11 @@
     border-radius: 8px;
     cursor: pointer;
     font-size: 13px;
+    font-family: var(--font);
     background: #FAFCFC;
     transition: all 0.15s;
     user-select: none;
+    line-height: 1.5;
   }
   .radio-item.selected {
     border-color: var(--teal);
@@ -273,6 +298,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    font-family: 'Inter', sans-serif;
   }
   .rating-btn.selected {
     background: var(--teal);
@@ -283,6 +309,8 @@
     font-size: 11px;
     color: var(--text-light);
     margin-top: 5px;
+    font-family: var(--font);
+    line-height: 1.5;
   }
 
   /* SPECIAL: GPS + PHOTO */
@@ -299,11 +327,15 @@
     font-weight: 700;
     color: var(--teal-dark);
     margin-bottom: 6px;
+    font-family: var(--font);
+    line-height: 1.6;
   }
   .special-box p {
     font-size: 12px;
     color: var(--text-light);
     margin-bottom: 12px;
+    font-family: var(--font);
+    line-height: 1.7;
   }
 
   .btn {
@@ -314,10 +346,11 @@
     border-radius: 10px;
     font-size: 14px;
     font-weight: 600;
-    font-family: inherit;
+    font-family: var(--font);
     border: none;
     cursor: pointer;
     transition: all 0.2s;
+    line-height: 1.4;
   }
   .btn-teal { background: var(--teal); color: #fff; }
   .btn-teal:hover { background: var(--teal-dark); }
@@ -332,7 +365,9 @@
     border-radius: 8px;
     font-size: 12px;
     font-weight: 600;
+    font-family: var(--font);
     display: none;
+    line-height: 1.6;
   }
   .gps-status.success {
     background: #E8F5E9;
@@ -399,6 +434,7 @@
     color: var(--teal);
     font-size: 11px;
     font-weight: 600;
+    font-family: var(--font);
     transition: background 0.2s;
   }
   .photo-add:hover { background: #B2DFDB; }
@@ -423,6 +459,7 @@
     font-weight: 700;
     color: var(--teal-dark);
     margin-bottom: 6px;
+    font-family: 'Inter', sans-serif;
   }
   .month-cell input {
     padding: 7px 8px;
@@ -454,6 +491,7 @@
     font-weight: 700;
     color: var(--text-mid);
     margin-bottom: 6px;
+    font-family: 'Inter', sans-serif;
   }
 
   /* FEE TABLE */
@@ -470,6 +508,7 @@
     font-size: 12px;
     color: var(--text-mid);
     font-weight: 500;
+    font-family: var(--font);
   }
   .fee-inputs { display: flex; gap: 6px; align-items: center; }
   .fee-inputs input {
@@ -497,6 +536,8 @@
     display: flex;
     align-items: center;
     gap: 6px;
+    font-family: var(--font);
+    line-height: 1.5;
   }
 
   /* NAV BUTTONS */
@@ -527,10 +568,11 @@
     max-width: 360px;
     text-align: center;
     box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    font-family: var(--font);
   }
   .submit-modal .big-icon { font-size: 48px; margin-bottom: 12px; }
-  .submit-modal h2 { font-size: 20px; color: var(--teal-dark); margin-bottom: 8px; }
-  .submit-modal p { font-size: 13px; color: var(--text-light); margin-bottom: 20px; }
+  .submit-modal h2 { font-size: 20px; color: var(--teal-dark); margin-bottom: 8px; font-family: var(--font); line-height: 1.5; }
+  .submit-modal p { font-size: 13px; color: var(--text-light); margin-bottom: 20px; font-family: var(--font); line-height: 1.7; }
 
   /* EXECUTIVE INFO BAR */
   .exec-bar {
@@ -543,6 +585,7 @@
     border-radius: 8px;
     background: #fff;
     font-size: 13px;
+    font-family: var(--font);
     padding: 9px 12px;
     width: 100%;
     margin-top: 6px;
@@ -553,6 +596,7 @@
     color: var(--accent);
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    font-family: 'Inter', sans-serif;
   }
 
   /* FLOATING BOTTOM BAR */
@@ -586,7 +630,8 @@
     font-size: 12px;
     color: var(--teal-dark);
     margin-bottom: 16px;
-    line-height: 1.5;
+    line-height: 1.7;
+    font-family: var(--font);
   }
 
   .badge {
@@ -599,6 +644,14 @@
     font-weight: 700;
     background: var(--teal-light);
     color: var(--teal-dark);
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* ✅ FIX: Placeholder text bhi Hindi font use kare */
+  ::placeholder {
+    font-family: var(--font);
+    color: var(--text-light);
+    opacity: 1;
   }
 </style>
 </head>
@@ -652,7 +705,6 @@
   </div>
   <div class="section-body">
 
-    <!-- GPS BOX -->
     <div class="special-box">
       <h3>📍 Clinic Location Tag करें</h3>
       <p>Executive को clinic के अंदर या बाहर खड़े होकर यह tap करना है</p>
@@ -663,7 +715,6 @@
       <div id="gpsDisplay" style="margin-top:8px;font-size:11px;color:var(--text-light);display:none"></div>
     </div>
 
-    <!-- PHOTO UPLOAD -->
     <div class="special-box" style="text-align:left;">
       <h3 style="text-align:center;">📷 Clinic Photos</h3>
       <p style="text-align:center;">बाहर का board + reception + chair area की photos लें</p>
@@ -1290,8 +1341,8 @@
     </div>
 
     <div style="background:var(--teal-light);border-radius:12px;padding:16px;margin-top:10px;text-align:center;">
-      <div style="font-size:13px;color:var(--teal-dark);font-weight:600;margin-bottom:8px;">घोषणा / Declaration</div>
-      <div style="font-size:12px;color:var(--text-mid);line-height:1.5;">मैं प्रमाणित करता/करती हूँ कि उपरोक्त जानकारी पूर्णतः सत्य है।</div>
+      <div style="font-size:13px;color:var(--teal-dark);font-weight:600;margin-bottom:8px;font-family:var(--font);line-height:1.6;">घोषणा / Declaration</div>
+      <div style="font-size:12px;color:var(--text-mid);line-height:1.7;font-family:var(--font);">मैं प्रमाणित करता/करती हूँ कि उपरोक्त जानकारी पूर्णतः सत्य है।</div>
     </div>
 
     <div style="margin-top:16px;display:flex;gap:10px;">
@@ -1317,73 +1368,47 @@
 <!-- SUBMIT OVERLAY -->
 <div class="submit-overlay" id="submitOverlay">
   <div class="submit-modal">
-
-    <!-- DEFAULT STATE -->
     <div id="modalDefault">
       <div class="big-icon">🎯</div>
       <h2>Submit करें</h2>
       <p style="margin-bottom:14px;">Google Sheets में भेजें या JSON backup download करें।</p>
-
-      <button class="btn btn-teal btn-full" onclick="submitToSheets()" style="margin-bottom:10px;">
-        📊 Google Sheets में Submit करें
-      </button>
-      <button class="btn btn-outline btn-full" onclick="downloadJSON()" style="margin-bottom:10px;">
-        📥 JSON Download करें (backup)
-      </button>
-      <button class="btn" onclick="document.getElementById('submitOverlay').classList.remove('show')" style="width:100%;justify-content:center;color:var(--text-light);font-size:13px;background:none;border:none;padding:8px;">
-        ← वापस जाएँ
-      </button>
+      <button class="btn btn-teal btn-full" onclick="submitToSheets()" style="margin-bottom:10px;">📊 Google Sheets में Submit करें</button>
+      <button class="btn btn-outline btn-full" onclick="downloadJSON()" style="margin-bottom:10px;">📥 JSON Download करें (backup)</button>
+      <button class="btn" onclick="document.getElementById('submitOverlay').classList.remove('show')" style="width:100%;justify-content:center;color:var(--text-light);font-size:13px;background:none;border:none;padding:8px;">← वापस जाएँ</button>
     </div>
-
-    <!-- SENDING STATE -->
     <div id="modalSending" style="display:none;">
       <div class="big-icon" style="animation:spin 1s linear infinite;display:inline-block;">⏳</div>
       <h2>भेजा जा रहा है...</h2>
       <p>Google Sheets से connect हो रहा है</p>
     </div>
-
-    <!-- SUCCESS STATE -->
     <div id="modalSuccess" style="display:none;">
       <div class="big-icon">✅</div>
       <h2 style="color:var(--success);">Sheet में Save हो गया!</h2>
       <p id="successMsg" style="margin-bottom:16px;"></p>
-      <button class="btn btn-teal btn-full" onclick="resetModal()" style="margin-bottom:8px;">
-        नया Form भरें
-      </button>
-      <button class="btn btn-outline btn-full" onclick="downloadJSON()">
-        📥 JSON भी Download करें
-      </button>
+      <button class="btn btn-teal btn-full" onclick="resetModal()" style="margin-bottom:8px;">नया Form भरें</button>
+      <button class="btn btn-outline btn-full" onclick="downloadJSON()">📥 JSON भी Download करें</button>
     </div>
-
-    <!-- ERROR STATE -->
     <div id="modalError" style="display:none;">
       <div class="big-icon">❌</div>
       <h2 style="color:var(--danger);">Error आया</h2>
       <p id="errorMsg" style="margin-bottom:14px;color:var(--danger);font-size:12px;"></p>
-      <button class="btn btn-outline btn-full" onclick="downloadJSON()" style="margin-bottom:8px;">
-        📥 JSON Download करें (offline backup)
-      </button>
-      <button class="btn" onclick="showModalState('default')" style="width:100%;justify-content:center;color:var(--text-light);font-size:13px;background:none;border:none;padding:8px;">
-        ← Try Again
-      </button>
+      <button class="btn btn-outline btn-full" onclick="downloadJSON()" style="margin-bottom:8px;">📥 JSON Download करें (offline backup)</button>
+      <button class="btn" onclick="showModalState('default')" style="width:100%;justify-content:center;color:var(--text-light);font-size:13px;background:none;border:none;padding:8px;">← Try Again</button>
     </div>
-
   </div>
 </div>
 
-<!-- SETTINGS PANEL (Script URL configure करने के लिए) -->
+<!-- SETTINGS PANEL -->
 <div style="position:fixed;bottom:72px;right:14px;z-index:60;">
   <button onclick="toggleSettings()" style="width:42px;height:42px;border-radius:50%;background:var(--teal);color:#fff;border:none;font-size:18px;cursor:pointer;box-shadow:0 2px 10px rgba(0,137,123,0.4);" title="Settings">⚙️</button>
 </div>
 
 <div id="settingsPanel" style="display:none;position:fixed;bottom:120px;right:14px;z-index:60;background:#fff;border-radius:14px;padding:16px;width:300px;box-shadow:0 8px 30px rgba(0,0,0,0.15);border:2px solid var(--border);">
-  <div style="font-size:13px;font-weight:700;color:var(--teal-dark);margin-bottom:8px;">⚙️ Google Sheets Setup</div>
-  <div style="font-size:11px;color:var(--text-light);margin-bottom:10px;line-height:1.5;">
-    Apps Script deploy करने के बाद Web App URL यहाँ paste करें।
-  </div>
-  <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/..." style="font-size:12px;padding:9px;border:2px solid var(--border);border-radius:8px;width:100%;margin-bottom:8px;" />
+  <div style="font-size:13px;font-weight:700;color:var(--teal-dark);margin-bottom:8px;font-family:var(--font);">⚙️ Google Sheets Setup</div>
+  <div style="font-size:11px;color:var(--text-light);margin-bottom:10px;line-height:1.7;font-family:var(--font);">Apps Script deploy करने के बाद Web App URL यहाँ paste करें।</div>
+  <input type="text" id="scriptUrl" placeholder="https://script.google.com/macros/s/..." style="font-size:12px;padding:9px;border:2px solid var(--border);border-radius:8px;width:100%;margin-bottom:8px;font-family:var(--font);" />
   <button class="btn btn-teal btn-full btn-sm" onclick="saveScriptUrl()">💾 Save URL</button>
-  <div id="urlStatus" style="font-size:11px;margin-top:6px;color:var(--text-light);"></div>
+  <div id="urlStatus" style="font-size:11px;margin-top:6px;color:var(--text-light);font-family:var(--font);"></div>
 </div>
 
 <style>
@@ -1391,13 +1416,11 @@
 </style>
 
 <script>
-  // ========= DATA STORE =========
   let currentSection = 0;
   let gpsData = null;
   let photos = [];
   const SECTIONS = 9;
 
-  // ========= FEES =========
   const treatments = [
     'Consultation Fee','Scaling / Cleaning','Simple Extraction','Surgical Extraction',
     'Root Canal — Single canal','Root Canal — Multi canal','Tooth Filling (Composite)',
@@ -1407,7 +1430,6 @@
   const months = ['April','May','June','July','August','September','October','November','December','January','February','March'];
   const hours = ['8–9 AM','9–10 AM','10–11 AM','11–12 PM','12–1 PM','1–2 PM','2–3 PM','3–4 PM','4–5 PM','5–6 PM','6–7 PM','7–8 PM'];
 
-  // ========= BUILD FEE TABLE =========
   const feeDiv = document.getElementById('feeTable');
   treatments.forEach(t => {
     const id = 'fee_' + t.replace(/[^a-z0-9]/gi,'_');
@@ -1421,7 +1443,6 @@
     </div>`;
   });
 
-  // ========= BUILD MONTH GRID =========
   const mgDiv = document.getElementById('monthGrid');
   months.forEach(m => {
     const id = 'month_' + m;
@@ -1436,7 +1457,6 @@
     </div>`;
   });
 
-  // ========= BUILD HOUR GRID =========
   const hgDiv = document.getElementById('hourGrid');
   hours.forEach(h => {
     const id = 'hour_' + h.replace(/[^a-z0-9]/gi,'_');
@@ -1451,10 +1471,8 @@
     </div>`;
   });
 
-  // Set today's date
   document.getElementById('i_date').valueAsDate = new Date();
 
-  // ========= GPS =========
   function captureGPS() {
     const status = document.getElementById('gpsStatus');
     const display = document.getElementById('gpsDisplay');
@@ -1468,12 +1486,7 @@
     }
     navigator.geolocation.getCurrentPosition(
       pos => {
-        gpsData = {
-          lat: pos.coords.latitude.toFixed(6),
-          lng: pos.coords.longitude.toFixed(6),
-          accuracy: Math.round(pos.coords.accuracy),
-          timestamp: new Date().toISOString()
-        };
+        gpsData = { lat: pos.coords.latitude.toFixed(6), lng: pos.coords.longitude.toFixed(6), accuracy: Math.round(pos.coords.accuracy), timestamp: new Date().toISOString() };
         status.className = 'gps-status success';
         status.innerHTML = `✅ Location Tagged! Accuracy: ±${gpsData.accuracy}m`;
         display.style.display = 'block';
@@ -1488,15 +1501,11 @@
     );
   }
 
-  // ========= PHOTOS =========
   function handlePhotos(input) {
     const files = Array.from(input.files);
     files.forEach(file => {
       const reader = new FileReader();
-      reader.onload = e => {
-        photos.push({ name: file.name, data: e.target.result });
-        renderPhotos();
-      };
+      reader.onload = e => { photos.push({ name: file.name, data: e.target.result }); renderPhotos(); };
       reader.readAsDataURL(file);
     });
     input.value = '';
@@ -1506,23 +1515,14 @@
     const grid = document.getElementById('photoGrid');
     grid.innerHTML = '';
     photos.forEach((p, i) => {
-      grid.innerHTML += `<div class="photo-thumb">
-        <img src="${p.data}" alt="clinic" />
-        <button class="photo-remove" onclick="removePhoto(${i})">✕</button>
-      </div>`;
+      grid.innerHTML += `<div class="photo-thumb"><img src="${p.data}" alt="clinic" /><button class="photo-remove" onclick="removePhoto(${i})">✕</button></div>`;
     });
-    grid.innerHTML += `<div class="photo-add" onclick="document.getElementById('photoInput').click()">
-      <span class="plus">+</span><span>Add</span>
-    </div>`;
+    grid.innerHTML += `<div class="photo-add" onclick="document.getElementById('photoInput').click()"><span class="plus">+</span><span>Add</span></div>`;
     document.getElementById('photoCount').textContent = `${photos.length} photo${photos.length !== 1 ? 's' : ''} added`;
   }
 
-  function removePhoto(i) {
-    photos.splice(i, 1);
-    renderPhotos();
-  }
+  function removePhoto(i) { photos.splice(i, 1); renderPhotos(); }
 
-  // ========= RADIO / CHECK / RATING =========
   function radioSel(el, groupId) {
     const group = document.getElementById(groupId);
     if (!group) return;
@@ -1543,14 +1543,9 @@
     el.classList.add('selected');
   }
 
-  // ========= NAVIGATION =========
   function goTo(idx) {
-    document.querySelectorAll('.section-card').forEach((c, i) => {
-      c.classList.toggle('active', i === idx);
-    });
-    document.querySelectorAll('.tab').forEach((t, i) => {
-      t.classList.toggle('active', i === idx);
-    });
+    document.querySelectorAll('.section-card').forEach((c, i) => c.classList.toggle('active', i === idx));
+    document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', i === idx));
     currentSection = idx;
     updateUI();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1566,113 +1561,41 @@
     document.getElementById('progressFill').style.width = pct + '%';
     document.getElementById('progressText').textContent = `Section ${currentSection + 1} of ${SECTIONS}`;
     document.getElementById('progressPct').textContent = pct + '%';
-
     document.getElementById('btnPrev').style.display = currentSection > 0 ? 'flex' : 'none';
     document.getElementById('btnNext').style.display = currentSection < SECTIONS - 1 ? 'flex' : 'none';
     document.getElementById('btnSubmit').style.display = currentSection === SECTIONS - 1 ? 'flex' : 'none';
-
-    // Mark tabs completed
     document.querySelectorAll('.tab').forEach((t, i) => {
       if (i < currentSection) t.classList.add('completed');
       else t.classList.remove('completed');
     });
   }
 
-  // ========= COLLECT DATA =========
   function collectData() {
     const get = id => { const el = document.getElementById(id); return el ? el.value : ''; };
     const getRadio = gid => { const el = document.querySelector(`#${gid} .radio-item.selected`); return el ? el.dataset.val : ''; };
     const getChecks = gid => Array.from(document.querySelectorAll(`#${gid} .check-item.selected`)).map(e => e.dataset.val);
     const getRating = gid => { const el = document.querySelector(`#${gid} .rating-btn.selected`); return el ? el.textContent : ''; };
-
-    // Fees
     const fees = {};
-    treatments.forEach(t => {
-      const id = 'fee_' + t.replace(/[^a-z0-9]/gi,'_');
-      fees[t] = { min: get(id+'_min'), max: get(id+'_max') };
-    });
-
-    // Monthly
+    treatments.forEach(t => { const id = 'fee_' + t.replace(/[^a-z0-9]/gi,'_'); fees[t] = { min: get(id+'_min'), max: get(id+'_max') }; });
     const monthly = {};
-    months.forEach(m => {
-      monthly[m] = { avg: get('month_'+m+'_avg'), type: getRadio('month_'+m+'_type') };
-    });
-
-    // Hourly
+    months.forEach(m => { monthly[m] = { avg: get('month_'+m+'_avg'), type: getRadio('month_'+m+'_type') }; });
     const hourly = {};
-    hours.forEach(h => {
-      const id = 'hour_' + h.replace(/[^a-z0-9]/gi,'_');
-      hourly[h] = getRadio(id);
-    });
-
+    hours.forEach(h => { const id = 'hour_' + h.replace(/[^a-z0-9]/gi,'_'); hourly[h] = getRadio(id); });
     return {
-      meta: {
-        executive: document.getElementById('execName').value,
-        form_version: 'Oraly-v1.0',
-        submitted_at: new Date().toISOString(),
-        gps: gpsData,
-        photos_count: photos.length,
-        photos: photos.map(p => ({ name: p.name, data: p.data })),
-        device: navigator.userAgent,
-        platform: navigator.platform
-      },
-      sectionA: {
-        name: get('a_name'), qualification: getRadio('a_qual'),
-        mds_spec: get('a_mds_spec'), clinic_name: get('a_clinic'),
-        address: get('a_address'), mobile: get('a_mobile'),
-        whatsapp: get('a_whatsapp'), email: get('a_email'),
-        gmaps: get('a_gmaps'), reg_no: get('a_regno'),
-        experience_years: get('a_exp')
-      },
-      sectionB: {
-        ownership: getRadio('b_ownership'), chairs: getRadio('b_chairs'),
-        waiting: getRadio('b_waiting'), xray: getChecks('b_xray'),
-        sterilization: getChecks('b_steril'), ac: getRadio('b_ac'),
-        parking: getRadio('b_parking'), access: getChecks('b_access'),
-        staff: getChecks('b_staff'), payment: getChecks('b_payment'),
-        appointment: getRadio('b_appt')
-      },
+      meta: { executive: document.getElementById('execName').value, form_version: 'Oraly-v1.0', submitted_at: new Date().toISOString(), gps: gpsData, photos_count: photos.length, photos: photos.map(p => ({ name: p.name, data: p.data })), device: navigator.userAgent, platform: navigator.platform },
+      sectionA: { name: get('a_name'), qualification: getRadio('a_qual'), mds_spec: get('a_mds_spec'), clinic_name: get('a_clinic'), address: get('a_address'), mobile: get('a_mobile'), whatsapp: get('a_whatsapp'), email: get('a_email'), gmaps: get('a_gmaps'), reg_no: get('a_regno'), experience_years: get('a_exp') },
+      sectionB: { ownership: getRadio('b_ownership'), chairs: getRadio('b_chairs'), waiting: getRadio('b_waiting'), xray: getChecks('b_xray'), sterilization: getChecks('b_steril'), ac: getRadio('b_ac'), parking: getRadio('b_parking'), access: getChecks('b_access'), staff: getChecks('b_staff'), payment: getChecks('b_payment'), appointment: getRadio('b_appt') },
       sectionC: { fees, emi: getRadio('c_emi'), insurance: getRadio('c_insurance'), packages: get('c_packages') },
-      sectionD: {
-        cost_perception: getRating('d_costperception'), cost_objection_on: getChecks('d_costobj'),
-        cost_action: getChecks('d_costobjaction'), patient_budget: get('d_budget'),
-        discount_pct: getRating('d_discpct'), gives_discount: getRadio('d_discount'),
-        discount_basis: getChecks('d_discbasis'), referral_discount: getRadio('d_refdisc')
-      },
+      sectionD: { cost_perception: getRating('d_costperception'), cost_objection_on: getChecks('d_costobj'), cost_action: getChecks('d_costobjaction'), patient_budget: get('d_budget'), discount_pct: getRating('d_discpct'), gives_discount: getRadio('d_discount'), discount_basis: getChecks('d_discbasis'), referral_discount: getRadio('d_refdisc') },
       sectionE: { monthly, low_season: getChecks('e_lowseasn'), low_avg: get('e_lowavg'), peak_avg: get('e_peakavg'), weekend: getRadio('e_weekend'), hourly, busiest_time: getRadio('e_busytime'), lunch_close: getRadio('e_lunchclose') },
-      sectionF: {
-        dropout_rate: getRating('f_dropout'), dropout_treatment: getChecks('f_droptreat'),
-        dropout_reason: getChecks('f_dropreason'), self_med: getRating('f_selfmed'),
-        patient_stage: getRadio('f_stage'), second_opinion: getRadio('f_opinion'),
-        word_of_mouth: getRadio('f_referral'), google_rating: getRadio('f_rating'),
-        biggest_challenge: get('f_challenge')
-      },
-      sectionG: {
-        competitor_count: getRadio('g_competitors'), competitor_dist: getRadio('g_compdist'),
-        usp: getChecks('g_usp'), patient_type: getRadio('g_pattype'),
-        area_awareness: getRadio('g_awareness'), big_problem: get('g_bigproblem'),
-        govt_camp: get('g_govtcamp')
-      },
-      sectionH: {
-        smartphone: getRadio('h_smartphone'), wa_photos: getRadio('h_waphotos'),
-        digital_rec: getRadio('h_digirec'), social: getChecks('h_social'),
-        booking_willing: getRadio('h_bookwilling'), priority_slot: getRadio('h_priorityslot'),
-        monthly_report: getRadio('h_report')
-      },
-      sectionI: {
-        expectations: getChecks('i_expect'), no_refer: get('i_notrefer'),
-        conditions: get('i_condition'), suggestion: get('i_suggestion'),
-        extra: get('i_extra'), exec_notes: get('i_excnotes'),
-        recommendation: getRadio('i_recommend'),
-        signatory_name: get('i_signname'), date: get('i_date')
-      }
+      sectionF: { dropout_rate: getRating('f_dropout'), dropout_treatment: getChecks('f_droptreat'), dropout_reason: getChecks('f_dropreason'), self_med: getRating('f_selfmed'), patient_stage: getRadio('f_stage'), second_opinion: getRadio('f_opinion'), word_of_mouth: getRadio('f_referral'), google_rating: getRadio('f_rating'), biggest_challenge: get('f_challenge') },
+      sectionG: { competitor_count: getRadio('g_competitors'), competitor_dist: getRadio('g_compdist'), usp: getChecks('g_usp'), patient_type: getRadio('g_pattype'), area_awareness: getRadio('g_awareness'), big_problem: get('g_bigproblem'), govt_camp: get('g_govtcamp') },
+      sectionH: { smartphone: getRadio('h_smartphone'), wa_photos: getRadio('h_waphotos'), digital_rec: getRadio('h_digirec'), social: getChecks('h_social'), booking_willing: getRadio('h_bookwilling'), priority_slot: getRadio('h_priorityslot'), monthly_report: getRadio('h_report') },
+      sectionI: { expectations: getChecks('i_expect'), no_refer: get('i_notrefer'), conditions: get('i_condition'), suggestion: get('i_suggestion'), extra: get('i_extra'), exec_notes: get('i_excnotes'), recommendation: getRadio('i_recommend'), signatory_name: get('i_signname'), date: get('i_date') }
     };
   }
 
-  function showSubmit() {
-    showModalState('default');
-    document.getElementById('submitOverlay').classList.add('show');
-  }
+  function showSubmit() { showModalState('default'); document.getElementById('submitOverlay').classList.add('show'); }
 
   function showModalState(state) {
     ['default','sending','success','error'].forEach(s => {
@@ -1680,12 +1603,8 @@
     });
   }
 
-  function resetModal() {
-    document.getElementById('submitOverlay').classList.remove('show');
-    window.location.reload();
-  }
+  function resetModal() { document.getElementById('submitOverlay').classList.remove('show'); window.location.reload(); }
 
-  // ========= SETTINGS =========
   const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbxSRwMsu7s7sWbKmwmlerqLHEKP82sx6Rf80dOUkoRdgoTyqMqMa2r0RBvFNQfEPwWuVQ/exec';
   let SCRIPT_URL = localStorage.getItem('oraly_script_url') || DEFAULT_URL;
 
@@ -1704,32 +1623,15 @@
 
   function updateUrlStatus() {
     const el = document.getElementById('urlStatus');
-    if (SCRIPT_URL && SCRIPT_URL.includes('script.google.com')) {
-      el.innerHTML = '✅ URL saved! Form ready to submit.';
-      el.style.color = 'var(--success)';
-    } else if (SCRIPT_URL) {
-      el.innerHTML = '⚠️ URL format सही नहीं लग रहा।';
-      el.style.color = 'var(--accent)';
-    } else {
-      el.innerHTML = '⬆️ Apps Script URL paste करें।';
-      el.style.color = 'var(--text-light)';
-    }
+    if (SCRIPT_URL && SCRIPT_URL.includes('script.google.com')) { el.innerHTML = '✅ URL saved! Form ready to submit.'; el.style.color = 'var(--success)'; }
+    else if (SCRIPT_URL) { el.innerHTML = '⚠️ URL format सही नहीं लग रहा।'; el.style.color = 'var(--accent)'; }
+    else { el.innerHTML = '⬆️ Apps Script URL paste करें।'; el.style.color = 'var(--text-light)'; }
   }
 
-  // Load saved URL on init
-  if (SCRIPT_URL) document.getElementById('scriptUrl') && (document.getElementById('scriptUrl').value = SCRIPT_URL);
-
-  // ========= GOOGLE SHEETS SUBMIT =========
   async function submitToSheets() {
     SCRIPT_URL = localStorage.getItem('oraly_script_url') || DEFAULT_URL;
-    if (!SCRIPT_URL || !SCRIPT_URL.includes('script.google.com')) {
-      alert('⚙️ पहले Settings (⚙️ button) में Apps Script URL save करें।');
-      return;
-    }
-
+    if (!SCRIPT_URL || !SCRIPT_URL.includes('script.google.com')) { alert('⚙️ पहले Settings (⚙️ button) में Apps Script URL save करें।'); return; }
     const data = collectData();
-
-    // ============ FIX 6: VALIDATION ============
     const errors = [];
     if (!data.meta.executive) errors.push('👤 Executive Name ज़रूरी है');
     if (!data.sectionA.name) errors.push('🦷 Doctor Name ज़रूरी है');
@@ -1738,46 +1640,22 @@
     if (!data.meta.gps) errors.push('📍 GPS Location capture करें');
     if (data.meta.photos_count < 1) errors.push('📷 कम से कम 1 Photo ज़रूरी है');
     if (!data.sectionI.recommendation) errors.push('✅ Section I में Recommendation ज़रूरी है');
-
-    if (errors.length > 0) {
-      alert('⚠️ कृपया यह fields भरें:\n\n' + errors.join('\n'));
-      document.getElementById('submitOverlay').classList.remove('show');
-      if (!data.meta.executive || !data.sectionA.name || !data.sectionA.mobile || !data.meta.gps || data.meta.photos_count < 1) goTo(0);
-      else goTo(8);
-      return;
-    }
-
+    if (errors.length > 0) { alert('⚠️ कृपया यह fields भरें:\n\n' + errors.join('\n')); document.getElementById('submitOverlay').classList.remove('show'); if (!data.meta.executive || !data.sectionA.name || !data.sectionA.mobile || !data.meta.gps || data.meta.photos_count < 1) goTo(0); else goTo(8); return; }
     showModalState('sending');
-
-    // ============ FIX 3: Proper fetch with timeout + JSON response ============
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 15000);
-
     try {
-      const res = await fetch(SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-        signal: controller.signal
-      });
+      await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), signal: controller.signal });
       clearTimeout(timeout);
-
-      // no-cors: response is opaque but if no error thrown, request reached server
-      const clinicName = data.sectionA.clinic_name;
-      document.getElementById('successMsg').textContent =
-        `"${clinicName}" का data भेजा गया। JSON backup download हो रही है।\nExecutive: ${data.meta.executive || 'N/A'}`;
+      document.getElementById('successMsg').textContent = `"${data.sectionA.clinic_name}" का data भेजा गया। JSON backup download हो रही है।\nExecutive: ${data.meta.executive || 'N/A'}`;
       showModalState('success');
       triggerDownload(data);
-
     } catch (err) {
       clearTimeout(timeout);
-      const msg = err.name === 'AbortError'
-        ? 'Timeout — Internet slow है। JSON backup download करें।'
-        : `Network error: ${err.message}`;
+      const msg = err.name === 'AbortError' ? 'Timeout — Internet slow है। JSON backup download करें।' : `Network error: ${err.message}`;
       document.getElementById('errorMsg').textContent = msg;
       showModalState('error');
-      triggerDownload(data); // Auto-backup on error
+      triggerDownload(data);
     }
   }
 
@@ -1787,27 +1665,18 @@
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url;
-    a.download = `oraly_${clinicName}_${dateStr}.json`;
-    a.click();
+    a.href = url; a.download = `oraly_${clinicName}_${dateStr}.json`; a.click();
     URL.revokeObjectURL(url);
   }
 
-  function downloadJSON() {
-    const data = collectData();
-    triggerDownload(data);
-    document.getElementById('submitOverlay').classList.remove('show');
-  }
+  function downloadJSON() { const data = collectData(); triggerDownload(data); document.getElementById('submitOverlay').classList.remove('show'); }
 
-  // INIT
   updateUI();
 </script>
 <script>
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(() => console.log('SW registered'))
-        .catch(e => console.log('SW error:', e));
+      navigator.serviceWorker.register('./sw.js').then(() => console.log('SW registered')).catch(e => console.log('SW error:', e));
     });
   }
 </script>
