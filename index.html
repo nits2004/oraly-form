@@ -10,10 +10,13 @@
 <meta name="theme-color" content="#00897B">
 <link rel="manifest" href="./manifest.json">
 
-<!-- ✅ HINDI FONT FIX: Noto Sans Devanagari -->
+<!-- ✅ FIX 5: Offline-safe font loading — async, non-blocking -->
+<!-- System Devanagari fonts (Android: Noto Sans, Windows: Nirmala UI, Linux: Lohit) load instantly offline -->
+<!-- Google Fonts loaded async — only enhances if network available; form fully usable without it -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"></noscript>
 
 <title>Oraly — Dentist Empanelment Form</title>
 <style>
@@ -34,8 +37,12 @@
     --success: #2E7D32;
     --radius: 14px;
     --shadow: 0 2px 12px rgba(0,137,123,0.10);
-    /* ✅ FIX: Devanagari-optimized font stack */
-    --font: 'Noto Sans Devanagari', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    /* ✅ FIX 5: Offline-safe Devanagari font stack
+       Android system: 'Noto Sans' / 'Noto Sans Devanagari' (built-in)
+       Windows: 'Nirmala UI' (built-in Hindi font)
+       Linux: 'Lohit Devanagari' (common on Ubuntu)
+       Google Fonts 'Noto Sans Devanagari' enhances when online */
+    --font: 'Noto Sans Devanagari', 'Nirmala UI', 'Lohit Devanagari', 'Noto Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -1384,7 +1391,7 @@
     <div id="modalSuccess" style="display:none;">
       <div class="big-icon">✅</div>
       <h2 style="color:var(--success);">Sheet में Save हो गया!</h2>
-      <p id="successMsg" style="margin-bottom:16px;"></p>
+      <p id="successMsg" style="margin-bottom:16px;text-align:left;line-height:1.7;font-size:12px;"></p>
       <button class="btn btn-teal btn-full" onclick="resetModal()" style="margin-bottom:8px;">नया Form भरें</button>
       <button class="btn btn-outline btn-full" onclick="downloadJSON()">📥 JSON भी Download करें</button>
     </div>
@@ -1570,7 +1577,9 @@
     });
   }
 
-  function collectData() {
+  // ========= FIX 1: collectData — full photo base64 included in JSON backup =========
+  // collectDataForSheets() strips photo binary to keep Sheets payload lean (photos saved in JSON only)
+  function collectData(includePhotos = true) {
     const get = id => { const el = document.getElementById(id); return el ? el.value : ''; };
     const getRadio = gid => { const el = document.querySelector(`#${gid} .radio-item.selected`); return el ? el.dataset.val : ''; };
     const getChecks = gid => Array.from(document.querySelectorAll(`#${gid} .check-item.selected`)).map(e => e.dataset.val);
@@ -1582,7 +1591,18 @@
     const hourly = {};
     hours.forEach(h => { const id = 'hour_' + h.replace(/[^a-z0-9]/gi,'_'); hourly[h] = getRadio(id); });
     return {
-      meta: { executive: document.getElementById('execName').value, form_version: 'Oraly-v1.0', submitted_at: new Date().toISOString(), gps: gpsData, photos_count: photos.length, photos: photos.map(p => ({ name: p.name, data: p.data })), device: navigator.userAgent, platform: navigator.platform },
+      meta: {
+        executive: document.getElementById('execName').value,
+        form_version: 'Oraly-v2.0',
+        submitted_at: new Date().toISOString(),
+        gps: gpsData,
+        photos_count: photos.length,
+        // FIX 1: base64 photo data included in JSON backup; stripped from Sheets payload
+        photos: includePhotos
+          ? photos.map(p => ({ name: p.name, data: p.data }))
+          : photos.map(p => ({ name: p.name, data: '[stripped for Sheets — see JSON backup]' })),
+        device: navigator.userAgent
+      },
       sectionA: { name: get('a_name'), qualification: getRadio('a_qual'), mds_spec: get('a_mds_spec'), clinic_name: get('a_clinic'), address: get('a_address'), mobile: get('a_mobile'), whatsapp: get('a_whatsapp'), email: get('a_email'), gmaps: get('a_gmaps'), reg_no: get('a_regno'), experience_years: get('a_exp') },
       sectionB: { ownership: getRadio('b_ownership'), chairs: getRadio('b_chairs'), waiting: getRadio('b_waiting'), xray: getChecks('b_xray'), sterilization: getChecks('b_steril'), ac: getRadio('b_ac'), parking: getRadio('b_parking'), access: getChecks('b_access'), staff: getChecks('b_staff'), payment: getChecks('b_payment'), appointment: getRadio('b_appt') },
       sectionC: { fees, emi: getRadio('c_emi'), insurance: getRadio('c_insurance'), packages: get('c_packages') },
@@ -1605,71 +1625,154 @@
 
   function resetModal() { document.getElementById('submitOverlay').classList.remove('show'); window.location.reload(); }
 
-  const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbxSRwMsu7s7sWbKmwmlerqLHEKP82sx6Rf80dOUkoRdgoTyqMqMa2r0RBvFNQfEPwWuVQ/exec';
-  let SCRIPT_URL = localStorage.getItem('oraly_script_url') || DEFAULT_URL;
+  // ========= FIX 2 & 4: SCRIPT_URL — correct localStorage restore, no hardcoded override =========
+  // On page load, read saved URL from localStorage only. No DEFAULT_URL fallback that could silently
+  // route submissions to wrong sheet.
+  let SCRIPT_URL = localStorage.getItem('oraly_script_url') || '';
 
   function toggleSettings() {
     const p = document.getElementById('settingsPanel');
     p.style.display = p.style.display === 'none' ? 'block' : 'none';
+    // FIX 4: always populate input from current SCRIPT_URL when opening panel
     document.getElementById('scriptUrl').value = SCRIPT_URL;
     updateUrlStatus();
   }
 
   function saveScriptUrl() {
-    SCRIPT_URL = document.getElementById('scriptUrl').value.trim();
-    localStorage.setItem('oraly_script_url', SCRIPT_URL);
+    const val = document.getElementById('scriptUrl').value.trim();
+    SCRIPT_URL = val;
+    if (val) {
+      localStorage.setItem('oraly_script_url', val);
+    } else {
+      localStorage.removeItem('oraly_script_url');
+    }
     updateUrlStatus();
   }
 
   function updateUrlStatus() {
     const el = document.getElementById('urlStatus');
-    if (SCRIPT_URL && SCRIPT_URL.includes('script.google.com')) { el.innerHTML = '✅ URL saved! Form ready to submit.'; el.style.color = 'var(--success)'; }
-    else if (SCRIPT_URL) { el.innerHTML = '⚠️ URL format सही नहीं लग रहा।'; el.style.color = 'var(--accent)'; }
-    else { el.innerHTML = '⬆️ Apps Script URL paste करें।'; el.style.color = 'var(--text-light)'; }
-  }
-
-  async function submitToSheets() {
-    SCRIPT_URL = localStorage.getItem('oraly_script_url') || DEFAULT_URL;
-    if (!SCRIPT_URL || !SCRIPT_URL.includes('script.google.com')) { alert('⚙️ पहले Settings (⚙️ button) में Apps Script URL save करें।'); return; }
-    const data = collectData();
-    const errors = [];
-    if (!data.meta.executive) errors.push('👤 Executive Name ज़रूरी है');
-    if (!data.sectionA.name) errors.push('🦷 Doctor Name ज़रूरी है');
-    if (!data.sectionA.clinic_name) errors.push('🏥 Clinic Name ज़रूरी है');
-    if (!data.sectionA.mobile) errors.push('📱 Mobile Number ज़रूरी है');
-    if (!data.meta.gps) errors.push('📍 GPS Location capture करें');
-    if (data.meta.photos_count < 1) errors.push('📷 कम से कम 1 Photo ज़रूरी है');
-    if (!data.sectionI.recommendation) errors.push('✅ Section I में Recommendation ज़रूरी है');
-    if (errors.length > 0) { alert('⚠️ कृपया यह fields भरें:\n\n' + errors.join('\n')); document.getElementById('submitOverlay').classList.remove('show'); if (!data.meta.executive || !data.sectionA.name || !data.sectionA.mobile || !data.meta.gps || data.meta.photos_count < 1) goTo(0); else goTo(8); return; }
-    showModalState('sending');
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 15000);
-    try {
-      await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data), signal: controller.signal });
-      clearTimeout(timeout);
-      document.getElementById('successMsg').textContent = `"${data.sectionA.clinic_name}" का data भेजा गया। JSON backup download हो रही है।\nExecutive: ${data.meta.executive || 'N/A'}`;
-      showModalState('success');
-      triggerDownload(data);
-    } catch (err) {
-      clearTimeout(timeout);
-      const msg = err.name === 'AbortError' ? 'Timeout — Internet slow है। JSON backup download करें।' : `Network error: ${err.message}`;
-      document.getElementById('errorMsg').textContent = msg;
-      showModalState('error');
-      triggerDownload(data);
+    if (SCRIPT_URL && SCRIPT_URL.includes('script.google.com')) {
+      el.innerHTML = '✅ URL saved! Form ready to submit.';
+      el.style.color = 'var(--success)';
+    } else if (SCRIPT_URL) {
+      el.innerHTML = '⚠️ URL format सही नहीं लग रहा। script.google.com वाला URL चाहिए।';
+      el.style.color = 'var(--accent)';
+    } else {
+      el.innerHTML = '⬆️ Apps Script deploy करके URL यहाँ paste करें।';
+      el.style.color = 'var(--text-light)';
     }
   }
 
+  // ========= FIX 6: Comprehensive validation =========
+  function validateForm(data) {
+    const errors = [];
+    // Section A — required fields
+    if (!data.meta.executive.trim())       errors.push({ section: 0, msg: '👤 Executive का नाम भरें' });
+    if (!data.sectionA.name.trim())        errors.push({ section: 0, msg: '🦷 Dentist का नाम ज़रूरी है' });
+    if (!data.sectionA.clinic_name.trim()) errors.push({ section: 0, msg: '🏥 Clinic का नाम ज़रूरी है' });
+    if (!data.sectionA.mobile.trim())      errors.push({ section: 0, msg: '📱 Mobile Number ज़रूरी है' });
+    if (!data.sectionA.address.trim())     errors.push({ section: 0, msg: '📍 पूरा पता भरें' });
+    if (!data.sectionA.qualification)      errors.push({ section: 0, msg: '🎓 Qualification select करें' });
+    if (!data.meta.gps)                    errors.push({ section: 0, msg: '📡 GPS Location capture करें — clinic के अंदर/बाहर से' });
+    if (data.meta.photos_count < 1)        errors.push({ section: 0, msg: '📷 कम से कम 1 clinic photo ज़रूरी है' });
+    // Section B — at least chairs selected
+    if (!data.sectionB.chairs)             errors.push({ section: 1, msg: '🪑 Dental Chairs की संख्या select करें' });
+    // Section I — recommendation mandatory
+    if (!data.sectionI.recommendation)     errors.push({ section: 8, msg: '✅ Section I में Recommendation ज़रूरी है' });
+    if (!data.sectionI.signatory_name.trim()) errors.push({ section: 8, msg: '✍️ Declaration में Dentist का नाम भरें' });
+    return errors;
+  }
+
+  // ========= FIX 2+3: submitToSheets — correct URL, honest success message, auto JSON backup =========
+  async function submitToSheets() {
+    // FIX 2: read from in-memory SCRIPT_URL (already synced with localStorage via saveScriptUrl)
+    // Do NOT re-assign from localStorage here — that was the bug causing custom URL to be overridden
+    if (!SCRIPT_URL || !SCRIPT_URL.includes('script.google.com')) {
+      alert('⚙️ पहले ⚙️ Settings button में Apps Script Web App URL save करें, फिर submit करें।');
+      toggleSettings();
+      return;
+    }
+
+    // FIX 1: use full data (with photos) for JSON backup, stripped for Sheets
+    const fullData = collectData(true);          // includes base64 photos → JSON backup
+    const sheetsData = collectData(false);        // strips photo binary → Sheets payload (lighter)
+
+    // FIX 6: run comprehensive validation
+    const errors = validateForm(fullData);
+    if (errors.length > 0) {
+      const firstSection = errors[0].section;
+      const msgs = errors.map(e => e.msg).join('\n');
+      alert('⚠️ कृपया यह fields पूरी करें:\n\n' + msgs);
+      document.getElementById('submitOverlay').classList.remove('show');
+      goTo(firstSection);
+      return;
+    }
+
+    showModalState('sending');
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',   // browser security — response body is opaque, cannot be read
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(sheetsData),
+        signal: controller.signal
+      });
+      clearTimeout(timeout);
+
+      // FIX 3: honest message — no-cors means we cannot confirm actual receipt
+      // JSON auto-download is the reliable record; Sheets is best-effort
+      document.getElementById('successMsg').innerHTML =
+        `<strong>"${fullData.sectionA.clinic_name}"</strong> का data Sheets को भेजा गया।<br><br>` +
+        `⚠️ Browser security के कारण Sheet confirmation verify नहीं हो सकती। ` +
+        `<strong>JSON backup नीचे auto-download हो रही है — यही असली record है।</strong><br><br>` +
+        `Executive: ${fullData.meta.executive}`;
+      showModalState('success');
+      // FIX 1: JSON backup always triggers with full photo data
+      triggerDownload(fullData);
+
+    } catch (err) {
+      clearTimeout(timeout);
+      let msg = err.name === 'AbortError'
+        ? 'Timeout (15s) — Internet slow है।'
+        : `Network error: ${err.message}`;
+      msg += '\n\nJSON backup download हो रही है — यह offline record safe है।';
+      document.getElementById('errorMsg').textContent = msg;
+      showModalState('error');
+      triggerDownload(fullData); // FIX 1: full photo data in error backup too
+    }
+  }
+
+  // FIX 1: triggerDownload always receives full data (with photos)
   function triggerDownload(data) {
     const clinicName = (data.sectionA.clinic_name || 'clinic').replace(/[^a-z0-9]/gi,'_');
+    const execName = (data.meta.executive || 'exec').replace(/[^a-z0-9]/gi,'_');
     const dateStr = new Date().toISOString().split('T')[0];
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = `oraly_${clinicName}_${dateStr}.json`; a.click();
+    a.href = url;
+    a.download = `oraly_${clinicName}_${execName}_${dateStr}.json`;
+    a.click();
     URL.revokeObjectURL(url);
   }
 
-  function downloadJSON() { const data = collectData(); triggerDownload(data); document.getElementById('submitOverlay').classList.remove('show'); }
+  function downloadJSON() {
+    // FIX 1: always include full photo data in manual JSON download
+    const data = collectData(true);
+    triggerDownload(data);
+    document.getElementById('submitOverlay').classList.remove('show');
+  }
+
+  // FIX 4: on page load, show URL status if already configured
+  window.addEventListener('DOMContentLoaded', () => {
+    if (SCRIPT_URL) {
+      const inp = document.getElementById('scriptUrl');
+      if (inp) inp.value = SCRIPT_URL;
+    }
+  });
 
   updateUI();
 </script>
