@@ -1628,7 +1628,9 @@
   // ========= FIX 2 & 4: SCRIPT_URL — correct localStorage restore, no hardcoded override =========
   // On page load, read saved URL from localStorage only. No DEFAULT_URL fallback that could silently
   // route submissions to wrong sheet.
-  let SCRIPT_URL = localStorage.getItem('oraly_script_url') || '';
+  le// FIX: URL hardcoded - har device pe kaam karega
+const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzOFYTotnv9zoEJ4ZyPtn0Fh7AVUbSKEEvf-4DiEKXwyY32b2Q89vv7f3XiZNKu3cXc/exec';
+let SCRIPT_URL = localStorage.getItem('oraly_script_url') || DEFAULT_SCRIPT_URL;t SCRIPT_URL = localStorage.getItem('oraly_script_url') || '';
 
   function toggleSettings() {
     const p = document.getElementById('settingsPanel');
